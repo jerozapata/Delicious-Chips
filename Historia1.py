@@ -14,14 +14,14 @@ def registrar_pedido(pedido):
         messagebox.showerror("Error", f"Faltan los siguientes campos obligatorios:\n" + "\n".join(faltantes))
         return False
     else:
-        resumen = f"Pedido registrado exitosamente.\n\nResumen del pedido:\n"
-        resumen += f"Producto: {pedido['producto']}\n"
-        resumen += f"Cantidad: {pedido['cantidad']}\n"
-        resumen += f"Sabor: {pedido['sabor']}\n"
-        resumen += f"Observaciones: {pedido['observaciones']}\n"
-        resumen += f"Nombre: {pedido['nombre']}\n"
-        resumen += f"Teléfono: {pedido['telefono']}\n"
-        resumen += f"Dirección: {pedido['direccion']}"
+        resumen = f"Pedido registrado exitosamente.\n\nResumen del pedido:\n\n"
+        resumen += f"Producto: {pedido['producto'].capitalize()}\n"
+        resumen += f"Cantidad: {pedido['cantidad'].capitalize()}\n"
+        resumen += f"Sabor: {pedido['sabor'].capitalize()}\n"
+        resumen += f"Observaciones: {pedido['observaciones'].capitalize()}\n"
+        resumen += f"Nombre: {pedido['nombre'].capitalize()}\n"
+        resumen += f"Teléfono: {pedido['telefono'].capitalize()}\n"
+        resumen += f"Dirección: {pedido['direccion'].capitalize()}"
         messagebox.showinfo("Registro Exitoso", resumen)
         return True
     
