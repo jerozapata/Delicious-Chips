@@ -7,24 +7,65 @@
     <link rel="stylesheet" href="C:\Users\Jeronimo Zapata\Documents\GitHub\Delicious-Chips\Delisious chips\styles.css">
 </head>
     <h1>Nuevo pedido</h1>
-
     <h3>Por favor, ingrese los detalles de su pedido</h3>
-    <form action="https://delisious-chips.com/pedidos" method="POST">
+
+    <div>
         <label for="nombre">Seleccione su producto: </label>
         <select name="producto" required>
             <option value="">--Seleccionar--</option>
             <option value="Papas">Papas</option>
             <option value="Nachos">Platanitos</option>
             <option value="Chicharrón">Rosquillas</option>
-          </select><br><br>
+        </select><br><br>
+    </div>
 
-        <label for="cantidad">Cantidad de chips:</label>
+    <div>
+        <label for="cantidad">Cantidad: </label>
         <input type="number" id="cantidad" name="cantidad" required><br><br>
+    </div>
+      
+    <div>       
+        <label for="nombre">Sabor: </label>
+        <select name="sabor" required>
+        <option value="">--Seleccionar--</option>
+        <option value="Limon">Limon</option>
+        <option value="Pimienta">Pimienta</option>
+        <option value="Picante">Picante</option>
+        </select><br>  <br> 
+    </div>
+ 
+    <div class="full-width">
+        <label for="observaciones">Observaciones:</label>
+        <textarea name="observaciones" rows="2"></textarea><br><br> 
+    </div>
 
-        <label for="direccion">Dirección de entrega:</label>
-        <input type="text" id="direccion" name="direccion" required><br><br>
+    <div>
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" required><br><br>
+    </div>
+  
+    <div>
+        <label for="documento">Documento:</label>
+        <input type="number" name="documento" required><br><br>
+    </div>
+  
+    <div>
+        <label for="telefono">Teléfono:</label>
+        <input type="number" name="telefono" required><br><br>
+    </div>
+    
+    <div class="full-width">
+        <label>Forma de entrega:</label><br>
+        <label><input type="radio" name="formaEntrega" value="domicilio"> Domicilio</label>
+        <label><input type="radio" name="formaEntrega" value="sede"> Recoger en sede</label>
+    </div>
 
-        <button type="submit">Enviar pedido</button>
+    <div>
+        <label for="direccion">Dirección:</label>
+        <input type="text" name="direccion" required><br><br>
+    </div>
+
+<button type="submit">Enviar pedido</button>
 
 <body>
     
