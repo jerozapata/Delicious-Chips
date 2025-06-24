@@ -24,8 +24,6 @@ def registrar_pedido(pedido):
         resumen += f"Dirección: {pedido['direccion'].capitalize()}"
         messagebox.showinfo("Registro Exitoso", resumen)
         return True
-    
-    
 
 # Función que recoge los datos de los campos y llama a registrar_pedido
 
