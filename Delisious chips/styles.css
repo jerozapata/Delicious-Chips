@@ -67,3 +67,20 @@ button:hover {
 .full-width {
   width: 100%;
 }
+
+#backy{
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f8ff;
+  color: #004080;
+  text-decoration: none;
+  border: 1px solid #a9c6e8;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.volver {
+  text-align: center;
+  margin-top: 30px;
+
+}
