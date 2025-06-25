@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuevo pedido - Delicious Chips</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
   <h1>Nuevo pedido</h1>
   <h3>Por favor, ingrese los detalles de su pedido</h3>
 
-  <form id="pedidoForm">
+  <form id="pedidoForm" method="POST" action="/registrar_pedido">
     <div>
       <label for="producto">Seleccione su producto:</label>
       <select name="producto" id="producto" required>
@@ -70,21 +70,16 @@
 
     <button type="submit" id="enviarPedido">Enviar pedido</button>
     <div class="volver">
-      <a id="backy" href="index.html">Volver a la página principal</a>
+      <a id="backy" href="{{ url_for('index') }}">Volver a la página principal</a>
     </div>
 
   </form>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const formulario = document.getElementById("pedidoForm");
-
-    formulario.addEventListener("submit", function (event) {
-      event.preventDefault(); 
-
-      alert("Tu pedido ha sido procesado con éxito :)");
-
-      formulario.reset();
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("exito")) {
+      alert("¡Pedido recibido y guardado!");
+    }
   });
 </script>
 </body>

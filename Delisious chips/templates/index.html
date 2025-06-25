@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Delicious Chips</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
+    </head>
+    <body>
+        <h1>Bienvenido a Delicious Chips Page Web</h1>
+        {% if exito %}
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
+                ✅ ¡Pedido recibido y guardado con éxito!
+            </div>
+            {% endif %}
+        <hr>
+        <div class="tope">
+            <ul id="bar">
+                <li><a href="index.html">Inicio</a></li>
+                <li>Ver cátalogo</li>
+                <li><a href="{{ url_for('regPedido') }}">Realizar pedido</a></li>
+                <li>Contactanos</li>
+                <li>PQRS</li>
+            </ul>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alerta = document.querySelector('div[style*="background-color: #d4edda"]');
+                if (alerta) alerta.style.display = 'none';
+            }, 4000); // Oculta después de 4 segundos
+            </script>
+
+    </body>
+</html>
