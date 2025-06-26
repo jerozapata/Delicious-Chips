@@ -8,10 +8,16 @@
 </head>
 <body>
 
+  {% if exito %}
+    <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
+        ✅ ¡Pedido recibido y guardado con éxito!
+    </div>
+  {% endif %}
+
   <h1>Nuevo pedido</h1>
   <h3>Por favor, ingrese los detalles de su pedido</h3>
 
-  <form id="pedidoForm" method="POST" action="/registrar_pedido">
+  <form id="pedidoForm" method="POST" action="/reg_pedido">
     <div>
       <label for="producto">Seleccione su producto:</label>
       <select name="producto" id="producto" required>
@@ -72,15 +78,20 @@
     <div class="volver">
       <a id="backy" href="{{ url_for('index') }}">Volver a la página principal</a>
     </div>
-
   </form>
+
+<h1>Opciones del despachador</h1>
+
+  <form action="/pedidos" method="get">
+    <button type="submit">Ver pedidos por gestionar</button>
+  </form>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("exito")) {
-      alert("¡Pedido recibido y guardado!");
-    }
-  });
+    setTimeout(function () {
+        const alerta = document.querySelector('div[style*="background-color: #d4edda"]');
+        if (alerta) alerta.style.display = 'none';
+    }, 4000); // Oculta después de 4 segundos
 </script>
+
 </body>
 </html>

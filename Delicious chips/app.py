@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, url_for
 from datetime import datetime
 
 app = Flask(__name__)
@@ -34,6 +34,35 @@ def leer_pedidos():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/registrar_pedido')
+def registrar_pedido():
+    exito = request.args.get('exito')
+    return render_template('registrar_pedido.html', exito=exito)
+
+@app.route('/reg_pedido', methods=['POST'])
+def reg_pedido():
+    producto = request.form['producto']
+    cantidad = request.form['cantidad']
+    sabor = request.form['sabor']
+    observaciones = request.form['observaciones']
+    nombre = request.form['nombre']
+    documento = request.form['documento']
+    telefono = request.form['telefono']
+    forma_entrega = request.form['formaEntrega']
+    direccion = request.form['direccion']
+    hora = datetime.now()
+    hora_for = hora.strftime('%Y-%m-%d %H:%M:%S')
+
+    # Guardar en un archivo
+    with open(ARCHIVO_PEDIDOS, 'a', encoding='utf-8') as f:
+        f.write(
+            f"{producto},{cantidad},{sabor},"
+            f"{observaciones.capitalize()},{nombre.capitalize()},{documento}, "
+            f"{telefono},{forma_entrega.capitalize()},{direccion.capitalize()},{hora_for}\n"
+        )
+
+    return redirect(url_for('registrar_pedido', exito=1))
 
 @app.route('/pedidos')
 def pedidos():

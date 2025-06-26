@@ -1,92 +1,33 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nuevo pedido - Delicious Chips</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Delicious Chips</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
+    </head>
+    <body>
+        <h1>Bienvenido a Delicious Chips Page Web</h1>
+        {% if exito %}
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
+                ✅ ¡Pedido recibido y guardado con éxito!
+            </div>
+            {% endif %}
+        <hr>
+        <div class="tope">
+            <ul id="bar">
+                <li><a href="index.html">Inicio</a></li>
+                <li>Ver cátalogo</li>
+                <li><a href="{{ url_for('registrar_pedido') }}">Realizar pedido</a></li>
+                <li>Contactanos</li>
+                <li>PQRS</li>
+            </ul>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alerta = document.querySelector('div[style*="background-color: #d4edda"]');
+                if (alerta) alerta.style.display = 'none';
+            }, 4000); // Oculta después de 4 segundos
+            </script>
 
-  <h1>Nuevo pedido</h1>
-  <h3>Por favor, ingrese los detalles de su pedido</h3>
-
-  <form id="pedidoForm">
-    <div>
-      <label for="producto">Seleccione su producto:</label>
-      <select name="producto" id="producto" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Papas">Papas</option>
-        <option value="Nachos">Platanitos</option>
-        <option value="Chicharrón">Rosquillas</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="cantidad">Cantidad:</label>
-      <input type="number" id="cantidad" name="cantidad" required>
-    </div>
-
-    <div>
-      <label for="sabor">Sabor:</label>
-      <select name="sabor" id="sabor" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Limon">Limón</option>
-        <option value="Pimienta">Pimienta</option>
-        <option value="Picante">Picante</option>
-      </select>
-    </div>
-
-    <div class="full-width">
-      <label for="observaciones">Observaciones:</label>
-      <textarea name="observaciones" id="observaciones" rows="2"></textarea>
-    </div>
-
-    <div>
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required>
-    </div>
-
-    <div>
-      <label for="documento">Documento:</label>
-      <input type="number" name="documento" id="documento" required>
-    </div>
-
-    <div>
-      <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" id="telefono" required>
-    </div>
-
-    <div class="full-width">
-      <label>Forma de entrega:</label><br>
-      <label><input type="radio" name="formaEntrega" value="domicilio"> Domicilio</label>
-      <label><input type="radio" name="formaEntrega" value="sede"> Recoger en sede</label>
-    </div>
-
-    <div>
-      <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" required>
-    </div>
-
-    <button type="submit" id="enviarPedido">Enviar pedido</button>
-  </form>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const formulario = document.getElementById("pedidoForm");
-
-    formulario.addEventListener("submit", function (event) {
-      event.preventDefault(); 
-
-      alert("Tu pedido ha sido procesado con éxito :)");
-
-      formulario.reset();
-    });
-  });
-</script>
-<h1>Opciones del despachador</h1>
-
-  <form action="/pedidos" method="get">
-    <button type="submit">Ver pedidos por gestionar</button>
-  </form>
-</body>
+    </body>
 </html>
