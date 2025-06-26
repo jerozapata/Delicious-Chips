@@ -16,7 +16,7 @@
       <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
       <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
       <p><strong>Documento:</strong> {{ pedido.documento }}</p>
-      <p><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+      <p><strong>Fecha y hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
 
       <a href="{{ url_for('detalle_pedido_cliente', pedido_id=loop.index0) }}" class="ver-detalle-btn">
         Ver detalle completo 
