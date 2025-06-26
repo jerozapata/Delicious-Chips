@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de pedidos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<h1>Pedidos por gestionar</h1>
+
+{% if pedidos %}
+  <div class="pedidos-container">
+  {% for pedido in pedidos %}
+    <div class="pedido-card">
+      <strong>Producto:</strong> {{ pedido.producto }}
+      <strong>Cantidad:</strong> {{ pedido.cantidad }}
+      <strong>Sabor:</strong> {{ pedido.sabor }}
+      <strong>Observaciones:</strong> {{ pedido.observaciones }}
+      <strong>Nombre:</strong> {{ pedido.nombre }}
+      <strong>Documento:</strong> {{ pedido.documento }}
+      <strong>Teléfono:</strong> {{ pedido.telefono }}
+      <strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}
+      <strong>Dirección:</strong> {{ pedido.direccion }}
+      <strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}
+    </div>
+  {% endfor %}
+</div>
+
+{% else %}
+  <p style="text-align: center;">No hay pedidos pendientes.</p>
+{% endif %}
+
+<a class="volver" href="/">← Volver al inicio</a>
+
+</body>
+</html>

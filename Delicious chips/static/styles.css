@@ -67,3 +67,46 @@ button:hover {
 .full-width {
   width: 100%;
 }
+
+.pedidos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 40px auto;
+}
+
+.pedido-card {
+  background-color: #ffffff;
+  border: 1px solid #a9c6e8;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0, 80, 160, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.pedido-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 80, 160, 0.1);
+}
+
+.pedido-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #004080;
+}
+
+.volver {
+  display: block;
+  text-align: center;
+  margin-top: 40px;
+  color: #004080;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.volver:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
