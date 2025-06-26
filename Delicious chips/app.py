@@ -61,13 +61,24 @@ def reg_pedido():
             f"{observaciones.capitalize()},{nombre.capitalize()},{documento}, "
             f"{telefono},{forma_entrega.capitalize()},{direccion.capitalize()},{hora_for}\n"
         )
-
-    return redirect(url_for('registrar_pedido', exito=1))
+    #facturación
+    pedidos = leer_pedidos()
+    pedido_id = len(pedidos) - 1
+    return redirect(url_for('factura', pedido_id=pedido_id))
 
 @app.route('/pedidos')
 def pedidos():
     pedidos = leer_pedidos()
     return render_template('lista_pedidos.html', pedidos=pedidos)
+
+@app.route('/factura/<int:pedido_id>')
+def factura(pedido_id):
+    pedidos = leer_pedidos()
+    if 0 <= pedido_id < len(pedidos):
+        pedido = pedidos[pedido_id]
+        return render_template('factura.html', pedido=pedido, pedido_index=pedido_id)
+
+    return "Factura no encontrada", 404
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,3 +3,10 @@ Platanitos,3,Limón,Sin sal adicional,Ana Torres,987654321,3101234567,Recoger en
 Rosquillas,1,Limón,No hay observacion,Daniel Gómez,1122334455,3007891234,Domicilio,Carrera 70 #45-22,2025-06-25 10:07:00
 Papas,4,Picante,Que apenas se sienta el picante,Marcela Díaz,5566778899,3114567890,Recoger en sede,Calle 10 #25-15,2025-06-25 10:10:00
 Papas,2,Pimienta,No hay observacion,Sebastián Ríos,6677889900,3012345678,Domicilio,Cra 85 #20-40,2025-06-25 10:12:00
+Nachos,4,Limon,,Nico,1076738964, 3145410108,Domicilio,C 75a#49-07,2025-06-25 23:53:38
+Papas,3,Limon,,Jdn,314, 1324,Sede,C 75a#49-07,2025-06-26 00:02:04
+Papas,3,Pimienta,,Nicolas,107675, 231456,Sede,C 75a#49-07,2025-06-26 00:07:17
+Nachos,3,Pimienta,,Nic,1323, 13245,Sede,Hw,2025-06-26 00:09:26
+Chicharrón,3,Limon,,Nico,263489, 123434,Sede,G82349,2025-06-26 00:18:49
+Papas,3,Limon,,Nldkso,567128394056, 34567890,Sede,Fgh,2025-06-26 00:20:19
+Papas,6,Limon,,Gbhjk,1342, 1235,Domicilio,2134waesdv,2025-06-26 00:25:22
