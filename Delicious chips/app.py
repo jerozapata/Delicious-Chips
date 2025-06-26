@@ -71,6 +71,15 @@ def pedidos():
     pedidos = leer_pedidos()
     return render_template('lista_pedidos.html', pedidos=pedidos)
 
+@app.route('/detalle_pedido_cliente/<int:pedido_id>')
+def detalle_pedido_cliente(pedido_id):
+    pedidos = leer_pedidos()
+    if 0 <= pedido_id < len(pedidos):
+        pedido = pedidos[pedido_id]
+        return render_template('detalle_pedido_cliente.html', pedido=pedido)
+    return "Pedido no encontrado", 404
+
+
 @app.route('/factura/<int:pedido_id>')
 def factura(pedido_id):
     pedidos = leer_pedidos()

@@ -12,16 +12,15 @@
   <div class="pedidos-container">
   {% for pedido in pedidos %}
     <div class="pedido-card">
-      <strong>Producto:</strong> {{ pedido.producto }}
-      <strong>Cantidad:</strong> {{ pedido.cantidad }}
-      <strong>Sabor:</strong> {{ pedido.sabor }}
-      <strong>Observaciones:</strong> {{ pedido.observaciones }}
-      <strong>Nombre:</strong> {{ pedido.nombre }}
-      <strong>Documento:</strong> {{ pedido.documento }}
-      <strong>Teléfono:</strong> {{ pedido.telefono }}
-      <strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}
-      <strong>Dirección:</strong> {{ pedido.direccion }}
-      <strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}
+      <p><strong>Producto:</strong> {{ pedido.producto }}</p>
+      <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
+      <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
+      <p><strong>Documento:</strong> {{ pedido.documento }}</p>
+      <p><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+
+      <a href="{{ url_for('detalle_pedido_cliente', pedido_id=loop.index0) }}" class="ver-detalle-btn">
+        Ver detalle completo 
+      </a>
     </div>
   {% endfor %}
 </div>
@@ -31,6 +30,8 @@
 {% endif %}
 
 <a class="volver" href="{{ url_for('registrar_pedido') }}">← Volver a pedidos</a>
+
+
 
 </body>
 </html>

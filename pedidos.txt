@@ -10,3 +10,9 @@ Nachos,3,Pimienta,,Nic,1323, 13245,Sede,Hw,2025-06-26 00:09:26
 Chicharrón,3,Limon,,Nico,263489, 123434,Sede,G82349,2025-06-26 00:18:49
 Papas,3,Limon,,Nldkso,567128394056, 34567890,Sede,Fgh,2025-06-26 00:20:19
 Papas,6,Limon,,Gbhjk,1342, 1235,Domicilio,2134waesdv,2025-06-26 00:25:22
+Papas,2,Limon,,Jer,1026060891, 32323232322,Sede,Calle 45 344-33,2025-06-26 11:45:58
+Papas,2,Limon,,Jero,121212112, 312312312,Domicilio,Calle 45-223-22,2025-06-26 11:55:33
+Chicharrón,3,Limon,,Jero,1026060891, 312343441,Domicilio,Calle 45 344-33,2025-06-26 11:58:17
+Nachos,100,Pimienta,Que no pique mucho,Jero,111111111111, 1111111111109,Sede,Calle 23 con 23,2025-06-26 12:19:08
+Chicharrón,2,Limon,,Juan,12121212, 12121211,Sede,1221,2025-06-26 12:24:08
+Nachos,12,Pimienta,,Marta,11, 11,Sede,12,2025-06-26 12:26:24

@@ -110,3 +110,17 @@ button:hover {
   color: #007bff;
   text-decoration: underline;
 }
+
+.ver-detalle-btn {
+  display: inline-block;
+  margin-top: 10px;
+  color: white;
+  background-color: #007bff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.ver-detalle-btn:hover {
+  background-color: #0056b3;
+}
