@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
   <title>Contáctanos | Delicious Chips</title>
   <style>
-	body {
+    body {
   font-family: Arial, sans-serif;
   background-color: #e6f0ff; /* azul crema suave */
   color: #2d2d2d;
@@ -128,12 +127,15 @@ input[type="email"]:focus {
 .btn-enviar:hover {
   background-color: #005bb5;
 }
-
-</style>
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Contáctanos</h1>
+
+    {% if mensaje %}
+      <p style="color: green; font-weight: bold;">{{ mensaje }}</p>
+    {% endif %}
 
     <div class="info"><strong>Teléfono:</strong> 3159284022</div>
     <div class="info"><strong>Correo:</strong> deliciouschips@yahoo.com.co</div>
@@ -151,7 +153,7 @@ input[type="email"]:focus {
 
     <div class="formulario">
       <h2>Déjanos tus datos</h2>
-      <form action="#" method="post">
+      <form method="post">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
 
@@ -179,3 +181,4 @@ input[type="email"]:focus {
   </div>
 </body>
 </html>
+

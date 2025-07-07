@@ -89,5 +89,24 @@ def factura(pedido_id):
 
     return "Factura no encontrada", 404
 
+ARCHIVO_CONTACTOS = 'contactos.txt'
+
+@app.route('/contactanos', methods=['GET', 'POST'])
+def contactanos():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        documento = request.form['documento']
+        correo = request.form['correo']
+        telefono = request.form['telefono']
+        direccion = request.form['direccion']
+        hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        with open(ARCHIVO_CONTACTOS, 'a', encoding='utf-8') as f:
+            f.write(f"{nombre},{documento},{correo},{telefono},{direccion},{hora}\n")
+
+        return render_template('contactanos.html', mensaje="¡Gracias por contactarnos! 😊")
+
+    return render_template('contactanos.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
