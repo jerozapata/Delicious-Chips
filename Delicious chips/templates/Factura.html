@@ -24,6 +24,7 @@
 <body>
 <div class="factura">
     <h2>Factura del Pedido</h2>
+    <p><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</p>
     <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
     <p><strong>Documento:</strong> {{ pedido.documento }}</p>
     <p><strong>Teléfono:</strong> {{ pedido.telefono }}</p>

@@ -8,24 +8,25 @@
 <body>
 <h1>Pedidos por gestionar</h1>
 
-{% if pedidos %}
-  <div class="pedidos-container">
-  {% for pedido in pedidos %}
+
+<div class="pedidos-container">
+  {% for idx, pedido in pedidos %}
     <div class="pedido-card">
       <p><strong>Producto:</strong> {{ pedido.producto }}</p>
       <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
       <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
-      <p><strong>Documento:</strong> {{ pedido.documento }}</p>
+      <strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}<br>
       <p><strong>Fecha y hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
 
-      <a href="{{ url_for('detalle_pedido_cliente', pedido_id=loop.index0) }}" class="ver-detalle-btn">
+      <a href="{{ url_for('detalle_pedido_cliente', pedido_id=pedido.id) }}" class="ver-detalle-btn">
         Ver detalle completo 
       </a>
     </div>
   {% endfor %}
+
 </div>
 
-{% else %}
+{% if not pedidos %}
   <p style="text-align: center;">No hay pedidos pendientes.</p>
 {% endif %}
 

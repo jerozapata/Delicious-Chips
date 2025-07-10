@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido exitoso</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+
+        .verde {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .rojo {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .volver {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: #004080;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.2s;
+            }
+
+        .volver:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .botones {
+            display: flex;
+            justify-content: center;
+            gap: 20px; 
+            margin-top: 20px;
+        }
+
+        .botones button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .botones button:hover {
+            background-color: #0056b3;
+        }
+        
+
+ 
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <h1>✅ ¡Pedido registrado y guardado con éxito!</h1>
+        <p>Tu número de pedido es: <strong>{{ "%04d" % pedido_id }}</strong></p>
+
+        <div class="botones">
+            <a href="{{ url_for('factura', pedido_id=pedido_id) }}"><button>Ver factura</button></a>
+            
+            <a href="{{ url_for('registrar_pedido') }}">
+                <button>Registrar nuevo pedido</button>
+            </a>
+            
+    </div>
+
+</body>
+</html>

@@ -31,3 +31,15 @@ h1{
 #bar li:hover {
   color: #aad4ff;
 }
+
+
+#bar li a {
+    color: white;
+    text-decoration: none;
+}
+
+
+#bar li a:hover {
+    color: #aad4ff;
+    text-decoration: underline;
+}

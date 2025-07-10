@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    
+    <title>Consultar Estado del Pedido</title>
+</head>
+<style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .mensaje {
+            margin-top: 20px;
+            padding: 15px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .verde {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .rojo {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .volver {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: #004080;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.2s;
+            }
+
+        .volver:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+ 
+    </style>
+<body>
+<div class="container">
+    <h2>Consulta Estado del Pedido</h2>
+
+    <form action="{{ url_for('ver_estado_pedido') }}" method="post">
+        <label for="numero">Número de pedido:</label>
+        <input type="number" name="numero" id="numero" required min="0" placeholder="ID pedido: 2897">
+        <button type="submit">Verificar estado</button>
+    </form>
+    {% if mensaje %}
+    <div class="mensaje {{ clase_color }}">
+        {{ mensaje }}
+    </div>
+    {% endif %}
+    <div class="volver">
+      <a id="backy" href="{{ url_for('index') }}">Volver a la página principal</a>
+    </div>
+
+</div>
+
+    
+</body>
+</html>

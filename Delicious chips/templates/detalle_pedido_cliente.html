@@ -60,6 +60,7 @@
   <div class="detalle">
     <h1>🧾 Detalle de tu Pedido</h1>
 
+    <div class="campo"><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</div>
     <div class="campo"><strong>Producto:</strong> {{ pedido.producto }}</div>
     <div class="campo"><strong>Cantidad:</strong> {{ pedido.cantidad }}</div>
     <div class="campo"><strong>Sabor:</strong> {{ pedido.sabor }}</div>
