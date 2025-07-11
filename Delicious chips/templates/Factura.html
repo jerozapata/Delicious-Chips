@@ -40,16 +40,25 @@
             <th>Precio unitario</th>
             <th>Total</th>
         </tr>
+       
+        {% for p in pedido.productos %}
+            
         <tr>
-            <td>{{ pedido.producto }}</td>
-            <td>{{ pedido.sabor }}</td>
-            <td>{{ pedido.cantidad }}</td>
-            <td>$5000</td>
-            <td>${{ pedido.cantidad * 5000 }}</td>
+            <td>{{ p.producto }}</td>
+            <td>{{ p.sabor }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td>${{ precio_unitario }}</td>
+            <td>${{ p.cantidad * precio_unitario  }}</td>
         </tr>
+        <tr>
+            <td colspan="5"><em>📝 Observaciones: {{ p.observaciones }}</em></td>
+        </tr>
+
+        {% endfor %}
+
     </table>
 
-    <p class="total">Total a pagar: ${{ pedido.cantidad * 5000 }}</p>
+    <p class="total">Total a pagar: ${{ total }}</p>
 <!--  
     <hr>
     <p style="text-align: center;">Puedes consultar tu pedido más tarde en:</p>

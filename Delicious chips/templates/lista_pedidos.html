@@ -12,10 +12,16 @@
 <div class="pedidos-container">
   {% for idx, pedido in pedidos %}
     <div class="pedido-card">
-      <p><strong>Producto:</strong> {{ pedido.producto }}</p>
-      <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
+      <p><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}<p>
       <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
-      <strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}<br>
+
+      <p><strong>Productos:</strong></p>
+      <ul>
+        {% for prod in pedido.productos %}
+          <li>{{ prod.cantidad }} x {{ prod.producto }} ({{ prod.sabor }})</li>
+        {% endfor %}
+      </ul>
+      
       <p><strong>Fecha y hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
 
       <a href="{{ url_for('detalle_pedido_cliente', pedido_id=pedido.id) }}" class="ver-detalle-btn">

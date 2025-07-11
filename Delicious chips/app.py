@@ -1,35 +1,110 @@
 from flask import Flask, render_template, redirect, request, url_for
 from datetime import datetime
+from collections import defaultdict
 
 app = Flask(__name__)
 
 ARCHIVO_PEDIDOS = 'pedidos.txt'
 
 def leer_pedidos():
-    pedidos = []
+    pedidos_dict = defaultdict(lambda:{
+          
+        "productos": [],
+        "nombre": "",
+        "documento": "",
+        "telefono": "",
+        "forma_entrega": "",
+        "direccion": "",
+        "hora": None
+    })
+
     try:
         with open(ARCHIVO_PEDIDOS, 'r', encoding='utf-8') as f:
+            
             for linea in f:
                 partes = linea.strip().split(',')
-                if len(partes) >= 8:
-                    pid, producto, cantidad, sabor, observaciones, nombre, documento, telefono, entrega, direccion, hora_str = partes
-                    hora = datetime.strptime(hora_str, '%Y-%m-%d %H:%M:%S')
-                    pedidos.append({
-                        "id": int(pid),
-                        "producto": producto,
-                        "cantidad": int(cantidad),
-                        "sabor": sabor,
-                        "observaciones": observaciones,
-                        "nombre": nombre,
-                        "documento": documento,
-                        "telefono": telefono,
-                        "forma_entrega": entrega,
-                        "direccion": direccion,
-                        "hora": hora
-                    })
+                if len(partes) == 11:
+                    # un producto por pedido
+                    try:
+                        pid = int(partes[0])
+                        producto = partes[1]
+                        cantidad = int(partes[2])
+                        sabor = partes[3]
+                        observaciones = partes[4]
+                        nombre = partes[5]
+                        documento = partes[6]
+                        telefono = partes[7]
+                        forma_entrega = partes[8]
+                        direccion = partes[9]
+                        hora = datetime.strptime(partes[10], '%Y-%m-%d %H:%M:%S')
+
+                        pedidos_dict[pid].update({
+                            "id": pid,
+                            "nombre": nombre,
+                            "documento": documento,
+                            "telefono": telefono,
+                            "forma_entrega": forma_entrega,
+                            "direccion": direccion,
+                            "hora": hora
+                        })
+
+                        pedidos_dict[pid]["productos"].append({
+                            "producto": producto,
+                            "cantidad": cantidad,
+                            "sabor": sabor,
+                            "observaciones": observaciones
+                        })
+                    except Exception as e:
+                        print(f"⚠️ Error procesando línea (formato viejo): {linea.strip()} | {e}")
+                        continue
+
+                elif len(partes) == 8:
+                    # mas de un producto por pedido
+                    try:
+                        pid = int(partes[0])
+                        detalles = partes[1]
+                        
+                        nombre = partes[2]
+                        documento = partes[3]
+                        telefono = partes[4]
+                        forma_entrega = partes[5]
+                        direccion = partes[6]
+                        hora = datetime.strptime(partes[7], '%Y-%m-%d %H:%M:%S')
+                        
+                        pedidos_dict[pid].update({
+                            "id": pid,
+                            "nombre": nombre,
+                            "documento": documento,
+                            "telefono": telefono,
+                            "forma_entrega": forma_entrega,
+                            "direccion": direccion,
+                            "hora": hora
+                        })
+
+
+                        productos = detalles.split('|')
+                        for p in productos:
+                            try:
+                                producto, cantidad, sabor, observaciones = p.split('-', 3)
+                                pedidos_dict[pid]["productos"].append({
+                                    "producto": producto,
+                                    "cantidad": int(cantidad),
+                                    "sabor": sabor,
+                                    "observaciones": observaciones
+                                })
+                            except ValueError:
+                                print(f"Error en línea de producto mal formada: '{p}'")
+                    except Exception as e:
+                        print(f"Error procesando línea (formato nuevo): {linea.strip()} | {e}")
+                        continue            
+                else:
+                    print(f"Línea con formato desconocido: {linea.strip()}")
+
+
     except FileNotFoundError:
-        pass
-    return sorted(pedidos, key=lambda x: x['hora'])
+        print("Archivo no encontrado.")
+        return []
+    return sorted(pedidos_dict.values(), key=lambda x: x['hora'])
 
 def obtener_nuevo_id():
     """
@@ -61,10 +136,15 @@ def registrar_pedido():
 
 @app.route('/reg_pedido', methods=['POST'])
 def reg_pedido():
-    producto = request.form['producto']
-    cantidad = request.form['cantidad']
-    sabor = request.form['sabor']
-    observaciones = request.form['observaciones']
+
+    productos = request.form.getlist('producto[]')
+    cantidades = request.form.getlist('cantidad[]')
+    sabores = request.form.getlist('sabor[]')
+    observaciones_list = request.form.getlist('observaciones[]')
+
+    if not (len(productos) == len(cantidades) == len(sabores) == len(observaciones_list)):
+        return "Error: los campos de producto no coinciden en cantidad.", 400
+    
     nombre = request.form['nombre']
     documento = request.form['documento']
     telefono = request.form['telefono']
@@ -75,18 +155,24 @@ def reg_pedido():
     
     pedido_id = obtener_nuevo_id()
 
+    detalles = "|".join(
+        f"{prod}-{cant}-{sabor}-{obs.strip() if obs.strip() else 'Sin observaciones'}"
+        for prod, cant, sabor, obs in zip(productos, cantidades, sabores, observaciones_list)
+
+    )
+
+    linea_pedido = f"{pedido_id},{detalles},{nombre},{documento},{telefono},{forma_entrega},{direccion},{hora_for}\n"
+
     # Guardar en un archivo
-    with open(ARCHIVO_PEDIDOS, 'a', encoding='utf-8') as f:
-        f.write(
-            f"{pedido_id},{producto},{cantidad},{sabor},"
-            f"{observaciones.capitalize()},{nombre.capitalize()},{documento}, "
-            f"{telefono},{forma_entrega.capitalize()},{direccion.capitalize()},{hora_for}\n"
-        )
+    try:
+        with open(ARCHIVO_PEDIDOS, 'a', encoding='utf-8') as f:
+            f.write(linea_pedido)
+        print("✅ Pedido guardado exitosamente.")
+    except Exception as e:
+        app.logger.error(f"❌ Error al guardar el pedido: {e}")
+        return render_template("error.html", mensaje="Ocurrió un problema al guardar tu pedido. Inténtalo de nuevo.")
 
     return redirect(url_for('pedido_exitoso', pedido_id=pedido_id))
-    #return redirect(url_for('registrar_pedido', exito='1', pid=pedido_id))
-    #facturación
-    #return redirect(url_for('factura', pedido_id=pedido_id))
 
 @app.route('/pedido_exitoso/<int:pedido_id>')
 def pedido_exitoso(pedido_id):
@@ -112,7 +198,11 @@ def factura(pedido_id):
     pedidos = leer_pedidos()
     pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
     if pedido:
-        return render_template('factura.html', pedido=pedido, pedido_index=pedido_id)
+        precio_unitario = 5000
+        total = sum(p["cantidad"] * precio_unitario for p in pedido["productos"])
+        print("📦 Productos del pedido:", pedido["productos"])
+
+        return render_template('factura.html', pedido=pedido, pedido_index=pedido_id,total=total, precio_unitario=precio_unitario)
     return "Factura no encontrada", 404
 
 ARCHIVO_CONTACTOS = 'contactos.txt'

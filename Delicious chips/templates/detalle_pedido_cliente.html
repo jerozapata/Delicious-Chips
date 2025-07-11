@@ -61,10 +61,16 @@
     <h1>🧾 Detalle de tu Pedido</h1>
 
     <div class="campo"><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</div>
-    <div class="campo"><strong>Producto:</strong> {{ pedido.producto }}</div>
-    <div class="campo"><strong>Cantidad:</strong> {{ pedido.cantidad }}</div>
-    <div class="campo"><strong>Sabor:</strong> {{ pedido.sabor }}</div>
-    <div class="campo"><strong>Observaciones:</strong> {{ pedido.observaciones or 'Ninguna' }}</div>
+
+    <div class="campo">
+      <strong>Productos:</strong>
+      <ul>
+        {% for p in pedido.productos %}
+          <li>{{ p.cantidad }} x {{ p.producto }} ({{ p.sabor }}) - {{ p.observaciones or 'Sin observaciones' }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
     <div class="campo"><strong>Nombre:</strong> {{ pedido.nombre }}</div>
     <div class="campo"><strong>Documento:</strong> {{ pedido.documento }}</div>
     <div class="campo"><strong>Teléfono:</strong> {{ pedido.telefono }}</div>
@@ -72,7 +78,7 @@
     <div class="campo"><strong>Dirección:</strong> {{ pedido.direccion }}</div>
     <div class="campo"><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</div>
 
-    <a class="volver" href="{{ url_for('index') }}">← Volver al inicio</a>
+    <a class="volver" href="{{ url_for('pedidos')}}">← Volver a la lista de pedidos</a>
   </div>
 
 </body>

@@ -18,36 +18,43 @@
   <h3>Por favor, ingrese los detalles de su pedido</h3>
 
   <form id="pedidoForm" method="POST" action="/reg_pedido">
-    <div>
-      <label for="producto">Seleccione su producto:</label>
-      <select name="producto" id="producto" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Papas">Papas</option>
-        <option value="Platanitos">Platanitos</option>
-        <option value="Chicharrón">Rosquillas</option>
-      </select>
+    
+    <h3>Productos del pedido</h3>
+    <div id="productos-container">
+
+      <div class="producto-item">
+
+        <label>Producto:</label>
+
+        <select name="producto[]" required>
+          <option value="">--Seleccionar--</option>
+          <option value="Papas">Papas</option>
+          <option value="Platanitos">Platanitos</option>
+          <option value="Rosquillas">Rosquillas</option>
+        </select>
+
+        <label>Cantidad:</label>
+        <input type="number" name="cantidad[]" required>
+
+        <label>Sabor:</label>
+        <select name="sabor[]" required>
+          <option value="">--Seleccionar--</option>
+          <option value="Limon">Limón</option>
+          <option value="Pimienta">Pimienta</option>
+          <option value="Picante">Picante</option>
+        </select>
+
+        <div class="full-width">
+          <label for="observacion">Observaciones:</label>
+        <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
     </div>
 
-    <div>
-      <label for="cantidad">Cantidad:</label>
-      <input type="number" id="cantidad" name="cantidad" required>
-    </div>
+      </div>
+  </div>
 
-    <div>
-      <label for="sabor">Sabor:</label>
-      <select name="sabor" id="sabor" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Limon">Limón</option>
-        <option value="Pimienta">Pimienta</option>
-        <option value="Picante">Picante</option>
-      </select>
-    </div>
-
-    <div class="full-width">
-      <label for="observaciones">Observaciones:</label>
-      <textarea name="observaciones" id="observaciones" rows="2"></textarea>
-    </div>
-
+  <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+    <button type="button" id="btnAgregarProducto">Agregar producto</button>
+  </div>
     <div>
       <label for="nombre">Nombre:</label>
       <input type="text" name="nombre" id="nombre" required>
@@ -87,11 +94,56 @@
   </form>
 
 <script>
-    setTimeout(function () {
-        const alerta = document.querySelector('div[style*="background-color: #d4edda"]');
-        if (alerta) alerta.style.display = 'none';
-    }, 4000); // Oculta después de 4 segundos
+  const contenedorProductos = document.getElementById('productos-container');
+  const btnAgregar = document.getElementById('btnAgregarProducto');
+
+  function crearProductoHTML() {
+    const div = document.createElement('div');
+    div.className = 'producto-item';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+      <label>Producto:</label>
+      <select name="producto[]" required>
+        <option value="">--Seleccionar--</option>
+        <option value="Papas">Papas</option>
+        <option value="Platanitos">Platanitos</option>
+        <option value="Rosquillas">Rosquillas</option>
+      </select>
+
+      <label>Cantidad:</label>
+      <input type="number" name="cantidad[]" required>
+
+      <label>Sabor:</label>
+      <select name="sabor[]" required>
+        <option value="">--Seleccionar--</option>
+        <option value="Limon">Limón</option>
+        <option value="Pimienta">Pimienta</option>
+        <option value="Picante">Picante</option>
+      </select>
+
+      <label>Observaciones:</label>
+      <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
+
+      <div style="text-align: right; margin-top: 5px;">
+        <button type="button" class="btnEliminar" onclick="eliminarProducto(this)">Quitar</button>
+      </div>
+    `;
+    return div;
+  }
+
+  function eliminarProducto(boton) {
+    const productos = document.querySelectorAll('.producto-item');
+    if (productos.length > 1) {
+      boton.closest('.producto-item').remove();
+    }
+  }
+
+  btnAgregar.addEventListener('click', () => {
+    const nuevo = crearProductoHTML();
+    contenedorProductos.appendChild(nuevo);
+  });
 </script>
+
 
 </body>
 </html>
