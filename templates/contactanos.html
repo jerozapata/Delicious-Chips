@@ -127,6 +127,20 @@ input[type="email"]:focus {
 .btn-enviar:hover {
   background-color: #005bb5;
 }
+.volver {
+  display: block;
+  text-align: center;
+  margin-top: 40px;
+  color: #004080;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s;
+  }
+
+.volver:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
   </style>
 </head>
 <body>
@@ -174,10 +188,10 @@ input[type="email"]:focus {
         </div>
       </form>
     </div>
-
-    <div class="botones">
-      <button type="button" class="btn-volver" onclick="location.href='index.html'">Volver</button>
+    <div class="volver">
+      <a class="btn-volver" href="{{ url_for('index') }}">Volver</a>
     </div>
+      
   </div>
 </body>
 </html>

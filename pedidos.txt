@@ -1,6 +1,7 @@
-1,Papas,2,Limón,El doble de sabor,Luis Rodríguez,123456789,3124567890,Domicilio,Cra 45 #12-34,2025-06-25 10:00:00
-2,Platanitos,3,Limón,Sin sal adicional,Ana Torres,987654321,3101234567,Recoger en sede,Calle 50 #30-10,2025-06-25 10:05:00
-3,Rosquillas,1,Limón,No hay observacion,Daniel Gómez,1122334455,3007891234,Domicilio,Carrera 70 #45-22,2025-06-25 10:07:00
-4,Papas,4,Picante,Que apenas se sienta el picante,Marcela Díaz,5566778899,3114567890,Recoger en sede,Calle 10 #25-15,2025-06-25 10:10:00
-5,Papas,2,Pimienta,No hay observacion,Sebastián Ríos,6677889900,3012345678,Domicilio,Cra 85 #20-40,2025-06-25 10:12:00
-6,Papas-4-Limon-Mucho limón|Platanitos-4-Limon-Sin mucho limón|Platanitos-2-Pimienta-Y limón,Susana Lopez,1123069382,3117367311,domicilio,Calle 24 Sur # 33-22 Poblado Torre Barcelona apto 2311,2025-07-11 00:12:03
+1,Papas-3-Limón-El doble de sabor(modificado),Luis Rodríguez,123456789,3124567890,domicilio,Cra 45 #12-34,2025-06-25 10:00:00,entregado
+2,Platanitos-3-Limón-Sin sal adicional,Ana Torres,987654321,3101234567,domicilio,Calle 50 #30-10,2025-06-25 10:05:00,listo
+3,Rosquillas-1-Limón-No hay observacion,Daniel Gómez,1122334455,3007891234,Domicilio,Carrera 70 #45-22,2025-06-25 10:07:00,preparacion
+4,Papas-4-Picante-Que apenas se sienta el picante,Marcela Díaz,5566778899,3114567890,domicilio,Calle 10 #25-15,2025-06-25 10:10:00,registrado
+5,Papas-2-Pimienta-No hay observacion,Sebastián Ríos,6677889900,3012345678,domicilio,Cra 85 #20-40,2025-06-25 10:12:00,registrado
+6,Papas-5-Limon-Mucho limón|Platanitos-4-Limon-Sin mucho limón|Platanitos-5-Pimienta-Y limón,Susana López,1123069382,3117367311,domicilio,Calle 24 Sur # 33-22 Poblado Torre Barcelona apto 2311,2025-07-11 00:12:03,listo
+7,Papas-1-Limon-sin sal|Platanitos-2-Pimienta-y limon,Jeronimo,1029435462,3124535654,domicilio,Calle 30 # 23 -23,2025-07-11 15:46:09,cancelado

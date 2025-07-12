@@ -61,6 +61,13 @@
     <h1>🧾 Detalle de tu Pedido</h1>
 
     <div class="campo"><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</div>
+    
+    <div class="campo">
+        <strong>Estado:</strong>
+        <span class="estado-label estado-{{ pedido.estado | default('Registrado') | replace(' ', '\\ ') }}">
+          {{ pedido.estado | default('Registrado') | title }}
+        </span>
+    </div>
 
     <div class="campo">
       <strong>Productos:</strong>
@@ -78,6 +85,10 @@
     <div class="campo"><strong>Dirección:</strong> {{ pedido.direccion }}</div>
     <div class="campo"><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</div>
 
+    
+    <a href="{{ url_for('modificar_pedido', pedido_id=pedido_id) }}">
+      <button>Modificar Pedido</button>
+    </a>
     <a class="volver" href="{{ url_for('pedidos')}}">← Volver a la lista de pedidos</a>
   </div>
 

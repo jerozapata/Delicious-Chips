@@ -24,7 +24,7 @@ def leer_pedidos():
             
             for linea in f:
                 partes = linea.strip().split(',')
-                if len(partes) == 11:
+                if len(partes) == 12:
                     # un producto por pedido
                     try:
                         pid = int(partes[0])
@@ -38,6 +38,8 @@ def leer_pedidos():
                         forma_entrega = partes[8]
                         direccion = partes[9]
                         hora = datetime.strptime(partes[10], '%Y-%m-%d %H:%M:%S')
+                        estado = partes[11].strip()
+                        pedidos_dict[pid]['estado'] = estado
 
                         pedidos_dict[pid].update({
                             "id": pid,
@@ -59,7 +61,7 @@ def leer_pedidos():
                         print(f"⚠️ Error procesando línea (formato viejo): {linea.strip()} | {e}")
                         continue
 
-                elif len(partes) == 8:
+                elif len(partes) >= 8:
                     # mas de un producto por pedido
                     try:
                         pid = int(partes[0])
@@ -71,6 +73,8 @@ def leer_pedidos():
                         forma_entrega = partes[5]
                         direccion = partes[6]
                         hora = datetime.strptime(partes[7], '%Y-%m-%d %H:%M:%S')
+                        estado = partes[8].strip() if len(partes) > 8 else 'registrado'
+                        pedidos_dict[pid]['estado'] = estado
                         
                         pedidos_dict[pid].update({
                             "id": pid,
@@ -172,6 +176,7 @@ def reg_pedido():
     except Exception as e:
         app.logger.error(f"❌ Error al guardar el pedido: {e}")
         return render_template("error.html", mensaje="Ocurrió un problema al guardar tu pedido. Inténtalo de nuevo.")
+        
 
     return redirect(url_for('pedido_exitoso', pedido_id=pedido_id))
 
@@ -183,14 +188,14 @@ def pedido_exitoso(pedido_id):
 @app.route('/pedidos')
 def pedidos():
     pedidos = leer_pedidos()
-    return render_template('lista_pedidos.html', pedidos=enumerate(pedidos))
+    return render_template('lista_pedidos.html', pedidos=pedidos)
 
 @app.route('/detalle_pedido_cliente/<int:pedido_id>')
 def detalle_pedido_cliente(pedido_id):
     pedidos = leer_pedidos()
     pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
     if pedido:
-        return render_template('detalle_pedido_cliente.html', pedido=pedido, pedido_index=pedido_id)
+        return render_template('detalle_pedido_cliente.html', pedido=pedido, pedido_id=pedido_id)
     return "Pedido no encontrado", 404
 
 
@@ -225,6 +230,77 @@ def contactanos():
 
     return render_template('contactanos.html')
 
+@app.route('/modificar_pedido/<int:pedido_id>', methods=['GET'])
+def modificar_pedido(pedido_id):
+    pedidos_lista = leer_pedidos()
+    pedido = next((p for p in pedidos_lista if p["id"] == pedido_id), None)
+    if pedido:
+        return render_template('modificar_pedido.html', pedido=pedido, pedido_id=pedido_id)
+    else:
+        return "Pedido no encontrado", 404
+    
+@app.route('/editar_producto/<int:pedido_id>/<int:producto_index>', methods=['GET'])
+def editar_producto(pedido_id, producto_index):
+    pedidos = leer_pedidos()
+    pedido = next((p for p in pedidos if p["id"] == pedido_id), None)
+    
+    if not pedido or producto_index >= len(pedido["productos"]):
+        return "Producto o pedido no encontrado", 404
+    
+    producto = pedido["productos"][producto_index]
+    return render_template("editar_producto.html", pedido=pedido, producto=producto, producto_index=producto_index)
+
+
+@app.route('/actualizar_pedido/<int:pedido_id>', methods=['POST'])
+def actualizar_pedido(pedido_id):
+    pedidos_lista = leer_pedidos()
+    pedido = next((p for p in pedidos_lista if p["id"] == pedido_id), None)
+    if not pedido:
+        return "Pedido no encontrado", 404
+
+    
+    productos = request.form.getlist('producto[]')
+    sabores = request.form.getlist('sabor[]')
+    cantidades = request.form.getlist('cantidad[]')
+    observaciones = request.form.getlist('observaciones[]')
+
+    # actualizar datos del pedido
+    nuevos_productos = []
+    for p, s, c, o in zip(productos, sabores, cantidades, observaciones):
+        nuevos_productos.append({
+            "producto": p,
+            "sabor": s,
+            "cantidad": int(c),
+            "observaciones": o
+        })
+
+    pedido['productos'] = nuevos_productos
+    pedido['nombre'] = request.form['nombre']
+    pedido['documento'] = request.form['documento']
+    pedido['telefono'] = request.form['telefono']
+    pedido['direccion'] = request.form['direccion']
+    pedido['forma_entrega'] = request.form['formaEntrega']
+    pedido['estado'] = request.form['estado']
+
+    #ahora sobrescribe el archivo
+    try:
+        with open(ARCHIVO_PEDIDOS, 'w', encoding='utf-8') as f:
+            for p in pedidos_lista:
+                detalles = "|".join(
+                    f"{prod['producto']}-{prod['cantidad']}-{prod['sabor']}-{prod['observaciones']}"
+                    for prod in p["productos"]
+                )
+
+                estado = p.get('estado', 'Registrado').strip()
+
+                linea = f"{p['id']},{detalles},{p['nombre']},{p['documento']},{p['telefono']},{p['forma_entrega']},{p['direccion']},{p['hora'].strftime('%Y-%m-%d %H:%M:%S')},{estado}\n"
+                
+                f.write(linea)
+    except Exception as e:
+        return f"Error al guardar el pedido: {e}", 500
+
+    return redirect(url_for('detalle_pedido_cliente', pedido_id=pedido_id))
+
 @app.route('/estado_pedido')
 def estado_pedido():
     return render_template('estado_pedido.html')
@@ -249,8 +325,55 @@ def ver_estado_pedido():
         mensaje = "⚠️ Número inválido. Intenta nuevamente."
         clase_color = 'rojo'
 
-    return render_template('estado_pedido.html', mensaje=mensaje, clase_color=clase_color)
+    return render_template('estado_pedido.html', mensaje=mensaje, clase_color=clase_color, pedido=pedido)
+
+@app.route('/cancelar_pedido/<int:pedido_id>', methods=['POST'])
+def cancelar_pedido(pedido_id):
+    pedidos = leer_pedidos()
+    pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
+
+    if not pedido:
+        return "Pedido no encontrado", 404
+
+    estado_actual = pedido.get("estado", "Registrado").lower()
+
+    mensajes_estado = {
+        'registrado': "✅ El pedido ha sido cancelado exitosamente. Gracias por avisarnos.",
+        
+        'preparacion': "⚠️ No se puede cancelar el pedido porque ya está en preparación. Por favor, <a href='/contactanos'><strong>contacta a nuestro servicio al cliente</strong></a> si necesitas más ayuda.",
+        
+        'listo': "⚠️ Tu pedido ya está listo para ser entregado o recogido. En esta etapa no es posible cancelarlo. <a href='/contactanos'><strong>Contacta al servicio al cliente</strong></a> para mayor asistencia.",
+        
+        'en camino': "📦 El pedido ya está en camino y no puede ser cancelado. Puedes rechazarlo en el momento de entrega o <a href='/contactanos'><strong>escribirnos aquí</strong></a> para más opciones.",
+        
+        'entregado': "🚚 El pedido ya fue entregado. Si tienes inconvenientes, por favor <a href='/contactanos'><strong>contacta a nuestro equipo de soporte</strong></a>.",
+        
+        'cancelado': "ℹ️ Este pedido ya fue cancelado anteriormente. Si fue un error, por favor <a href='/contactanos'><strong>crea uno nuevo o contáctanos</strong></a>.",
+    }
+
+    if estado_actual != "registrado":
+        mensaje = mensajes_estado.get(estado_actual, "⚠️ No se puede cancelar el pedido debido a un estado desconocido. <a href='/contactanos'><strong>Contáctanos</strong></a> para revisar el caso.")
+        return render_template("estado_pedido.html", mensaje=mensaje, clase_color="rojo", pedido=pedido, pedido_id=pedido_id)
+
+
+    # Cambiar el estado a cancelado
+    pedido["estado"] = "cancelado"
+
+    # Guardar los cambios
+    try:
+        with open(ARCHIVO_PEDIDOS, 'w', encoding='utf-8') as f:
+            for p in pedidos:
+                detalles = "|".join(
+                    f"{prod['producto']}-{prod['cantidad']}-{prod['sabor']}-{prod['observaciones']}"
+                    for prod in p["productos"]
+                )
+                estado = p.get('estado', 'Registrado').strip()
+                linea = f"{p['id']},{detalles},{p['nombre']},{p['documento']},{p['telefono']},{p['forma_entrega']},{p['direccion']},{p['hora'].strftime('%Y-%m-%d %H:%M:%S')},{estado}\n"
+                f.write(linea)
+        mensaje = mensajes_estado['registrado']
+        return render_template("estado_pedido.html", mensaje=mensaje, clase_color="verde", pedido=pedido, pedido_id=pedido_id)
+    except Exception as e:
+        return f"Error al cancelar el pedido: {e}", 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, port=5000)
