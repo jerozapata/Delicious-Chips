@@ -137,7 +137,16 @@ def index():
 @app.route('/registrar_pedido')
 def registrar_pedido():
     exito = request.args.get('exito')
-    return render_template('registrar_pedido.html', exito=exito)
+    return render_template(
+        'registrar_pedido.html',
+        exito=exito,
+        cedula=request.args.get('cedula', ''),
+        nombre=request.args.get('nombre', ''),
+        telefono=request.args.get('telefono', ''),
+        direccion=request.args.get('direccion', ''),
+        cliente_existente=bool(request.args.get('nombre'))
+    )
+
 
 @app.route('/reg_pedido', methods=['POST'])
 def reg_pedido():
@@ -374,6 +383,34 @@ def cancelar_pedido(pedido_id):
         return render_template("estado_pedido.html", mensaje=mensaje, clase_color="verde", pedido=pedido, pedido_id=pedido_id)
     except Exception as e:
         return f"Error al cancelar el pedido: {e}", 500
+    
+@app.route('/verificar_cliente', methods=['GET', 'POST'])
+def verificar_cliente():
+    if request.method == 'POST':
+        cedula = request.form['cedula']
+        nombre = ''
+        telefono = ''
+        direccion = ''
+        encontrado = False
+
+        with open('pedidos.txt', 'r', encoding='utf-8') as archivo:
+            for linea in archivo:
+                partes = linea.strip().split(',')
+                if len(partes) >= 8 and partes[3] == cedula:
+                    nombre = partes[2]
+                    telefono = partes[4]
+                    direccion = partes[6]
+                    encontrado = True
+                    break
+
+        if encontrado:
+            return redirect(url_for('registrar_pedido', cedula=cedula, nombre=nombre, telefono=telefono, direccion=direccion))
+        else:
+            return redirect(url_for('registrar_pedido', cedula=cedula))  #solo autorellena cédula
+
+    return render_template('verificar_cliente.html')
+
+
 
 if __name__ == '__main__':
     # Configuración para Render

@@ -9,6 +9,15 @@
 
 </head>
 <body>
+  {% if cliente_existente %}
+  <div style="background-color: #e6f4ea; color: #1d6432; border: 1px solid #b2d8b2; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+    👋 ¡Hola {{ nombre }}! Tus datos han sido cargados automáticamente.
+  </div>
+  {% else %}
+  <div style="background-color: #f4e6e6; color: #641d1d; border: 1px solid #d8b2b2; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+    🆕 ¡Hola! No encontramos tu información. Por favor completa tus datos.
+  </div>
+  {% endif %}
 
   {% if exito %}
     <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
@@ -59,17 +68,17 @@
   </div>
     <div>
       <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required>
+      <input type="text" name="nombre" id="nombre" value="{{ nombre }}" {% if cliente_existente %}readonly{% endif %} required>
     </div>
 
     <div>
       <label for="documento">Documento:</label>
-      <input type="number" name="documento" id="documento" required>
+      <input type="number" name="documento" id="documento" value="{{ cedula }}" {% if cliente_existente %}readonly{% endif %} required>
     </div>
 
     <div>
       <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" id="telefono" required>
+      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %} required>
     </div>
 
     <div class="full-width">
@@ -80,7 +89,7 @@
 
     <div>
       <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" required>
+      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} required>
     </div>
 
     <button type="submit" id="enviarPedido">Enviar pedido</button>
