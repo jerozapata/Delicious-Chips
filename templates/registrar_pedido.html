@@ -18,7 +18,7 @@
   <div style="background-color: #f4e6e6; color: #641d1d; border: 1px solid #d8b2b2; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
     🆕 ¡Hola! No encontramos tu información. Por favor completa tus datos.
   </div>
-  
+
   {% endif %}
   <div class="hero">
     <div class="overlay">
@@ -72,20 +72,20 @@
 
       
       <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required>
+      <input type="text" name="nombre" id="nombre" value="{{ nombre }}" {% if cliente_existente %}readonly{% endif %} required>
       
       <label for="documento">Documento:</label>
-      <input type="number" name="documento" value="{{pedido.nombre if pedido else ''}}" id="documento" required>
+      <input type="number" name="documento" id="documento" value="{{ cedula }}" {% if cliente_existente %}readonly{% endif %} required>
 
       <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" value="{{pedido.telefono if pedido else ''}}" id="telefono" required>
+      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %}  required>
 
       <label>Forma de entrega:</label><br>
       <label><input type="radio" name="forma_entrega" value="Domicilio"> Domicilio</label>
       <label><input type="radio" name="forma_entrega" value="Recoger en sede"> Recoger en sede</label>
 
       <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" required>
+      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} required>
 
       <br></br>
       <button type="submit" id="enviarPedido">Enviar pedido</button>

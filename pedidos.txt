@@ -6,3 +6,4 @@
 6,Papas-5-Limon-Mucho limón|Platanitos-4-Limon-Sin mucho limón|Platanitos-5-Pimienta-Y limón,Susana López,1123069382,3117367311,Domicilio,Calle 24 Sur # 33-22 Poblado Torre Barcelona apto 2311,2025-07-11 00:12:03,listo
 7,Papas-1-Limon-sin sal|Platanitos-2-Pimienta-y limon,Jeronimo,1029435462,3124535654,Domicilio,Calle 30 # 23 -23,2025-07-11 15:46:09,cancelado
 8,Papas-1-Limon-1,1,1,1,Recoger en sede,1,2025-07-13 02:45:29
+9,Papas-1-Limon-Sin observaciones,Ana Torres,987654321,3101234567,Recoger en sede,Calle 50 #30-10,2025-07-14 13:32:06

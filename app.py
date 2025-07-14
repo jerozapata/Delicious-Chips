@@ -134,6 +134,35 @@ def obtener_nuevo_id():
 def index():
     return render_template('index.html')
 
+@app.route('/verificar_cliente', methods=['GET', 'POST'])
+def verificar_cliente():
+    if request.method == 'POST':
+        cedula = request.form['cedula']
+        nombre = ''
+        telefono = ''
+        direccion = ''
+        encontrado = False
+
+        try:
+            with open(ARCHIVO_PEDIDOS, 'r', encoding='utf-8') as archivo:
+                for linea in archivo:
+                    partes = linea.strip().split(',')
+                    if len(partes) >= 8 and partes[3] == cedula:
+                        nombre = partes[2]
+                        telefono = partes[4]
+                        direccion = partes[6]
+                        encontrado = True
+                        break
+        except FileNotFoundError:
+            pass
+
+        if encontrado:
+            return redirect(url_for('registrar_pedido', cedula=cedula, nombre=nombre, telefono=telefono, direccion=direccion))
+        else:
+            return redirect(url_for('registrar_pedido', cedula=cedula))  # Solo autorellena cédula
+
+    return render_template('verificar_cliente.html')
+
 @app.route('/registrar_pedido')
 def registrar_pedido():
     exito = request.args.get('exito')
