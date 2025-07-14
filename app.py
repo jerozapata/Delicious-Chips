@@ -137,7 +137,16 @@ def index():
 @app.route('/registrar_pedido')
 def registrar_pedido():
     exito = request.args.get('exito')
-    return render_template('registrar_pedido.html', exito=exito)
+    return render_template(
+        'registrar_pedido.html',
+        exito=exito,
+        cedula=request.args.get('cedula', ''),
+        nombre=request.args.get('nombre', ''),
+        telefono=request.args.get('telefono', ''),
+        direccion=request.args.get('direccion', ''),
+        cliente_existente=bool(request.args.get('nombre'))
+    )
+
 
 @app.route('/reg_pedido', methods=['GET','POST'])
 def reg_pedido():
@@ -407,7 +416,6 @@ def cancelar_pedido(pedido_id):
         return render_template("estado_pedido.html", mensaje=mensaje, clase_color="verde", pedido=pedido, pedido_id=pedido_id)
     except Exception as e:
         return f"Error al cancelar el pedido: {e}", 500
-    
 
 if __name__ == '__main__':
     # Configuración para Render
