@@ -47,9 +47,9 @@
             <input type="text" name="direccion" value="{{ pedido.get('direccion', '') }}"><br><br>
 
             <label>Forma de entrega:</label>
-            <select name="formaEntrega">
-                <option value="domicilio"{% if pedido.get('formaEntrega') == 'domicilio' %}selected{% endif %}>Domicilio</option>
-                <option value="sede"{% if pedido.get('formaEntrega') == 'sede' %}selected{% endif %}>Recoger en sede</option>
+            <select name="forma_entrega">
+                <option value="Domicilio"{% if pedido.get('forma_entrega') == 'domicilio' %}selected{% endif %}>Domicilio</option>
+                <option value="Recoger en sede"{% if pedido.get('forma_entrega') == 'sede' %}selected{% endif %}>Recoger en sede</option>
             </select><br><br>
 
             <label for="estado">Estado del pedido:</label>

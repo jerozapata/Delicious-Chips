@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
         <title>Delicious Chips</title>
@@ -8,18 +8,62 @@
 
     </head>
     <body>
-        <h1>Bienvenido a Delicious Chips Page Web</h1>
-        <hr>
-        <div class="tope">
+
+        <header class="hero">
+            <div class="overlay">
+                <h1>Bienvenido a <span>Delicious Chips</span></h1>
+                <p>Se me hace agua la boca</p>
+            </div>
+        </header>
+
+        <nav class="navbar">
             <ul id="bar">
                 <li><a href="{{url_for('index')}}">Inicio</a></li>
                 <li>Ver cátalogo</li>
                 <li><a href="{{ url_for('registrar_pedido') }}">Realizar pedido</a></li>
                 <li><a href="{{ url_for('contactanos') }}">Contáctanos</a></li>
-                <li>PQRS</li>
-                <li><a href="{{ url_for('estado_pedido') }}">Consultar estado del pedido</a></li>
+                <li><a href="{{ url_for('estado_pedido') }}">Rastrea tu pedido</a></li>
+                <li class="admin-link"><a href="{{ url_for('pedidos') }}">🔐 Admin</a></li>
             </ul>
-        </div>
+        </nav>
 
+        <section class="contenido-principal">
+        
+            <div class="galeria-productos">
+                <h2>Explora nuestros productos</h2>
+                <div class="grid-productos">
+                    <div class="producto">
+                        <img src="{{url_for('static', filename='chips-limon-pimienta.jpg')}}" alt="Papas Limon y Pimienta">
+                        <p>Papas Chips de Limón Pimienta</p>
+                    </div>
+                    <div class="producto">
+                        <img src="{{url_for('static', filename='pasabocas-limon.jpg')}}" alt="Pasabocas Limón">
+                        <p>Pasabocas de Limón</p>
+                    </div>
+                    <div class="producto">
+                        <img src="{{url_for('static', filename='chicharrin-limon.jpg')}}" alt="Chicharrín Limón">
+                        <p>Chicharrín de Limón</p>
+                    </div>
+                    <div class="producto">
+                        <img src="{{url_for('static', filename='pasabocas-tocineta.jpg')}}" alt="Pasabocas Tocineta">
+                        <p>Pasabocas Tocineta</p>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <p class="subtexto">Haz tu pedido fácilmente desde nuestra plataforma.</p>
+            <!--<img src="{{ url_for('static', filename='cliente.png') }}" alt="Cliente feliz" class="img-sec">-->
+            <div class="boton-centro">
+                <a href="{{ url_for('registrar_pedido') }}" class="btn">Realizar Pedido</a>
+            </div>
+        
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Delicious Chips. Todos los derechos reservados.</p>
+        </footer>
+
+        
     </body>
 </html>

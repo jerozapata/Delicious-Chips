@@ -4,30 +4,114 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuevo pedido - Delicious Chips</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
 </head>
 <body>
-
+  <div class="hero">
+    <div class="overlay">
+      <h1><span>Delicious</span> Chips</h1>
+      <p></p>
+    </div>
+  </div>
+<!--
   {% if exito %}
     <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
         ✅ ¡Pedido recibido y guardado con éxito!
     </div>
   {% endif %}
+-->
+  <div class="contenido-principal">
 
-  <h1>Nuevo pedido</h1>
-  <h3>Por favor, ingrese los detalles de su pedido</h3>
+  
+    <h2>Nuevo pedido</h2>
+    <p class="subtexto">Por favor, ingrese los detalles de su pedido</p>
 
-  <form id="pedidoForm" method="POST" action="/reg_pedido">
-    
-    <h3>Productos del pedido</h3>
-    <div id="productos-container">
+    <form id="pedidoForm" method="POST" action="/reg_pedido">
+      
+      <h3>Productos del pedido</h3>
+      <div id="productos-container" class="grid-productos">
+        <div class="producto-item">
 
-      <div class="producto-item">
+          <label>Producto:</label>
 
+          <select name="producto[]" required>
+            <option value="">--Seleccionar--</option>
+            <option value="Papas">Papas</option>
+            <option value="Platanitos">Platanitos</option>
+            <option value="Rosquillas">Rosquillas</option>
+          </select>
+
+          <label>Cantidad:</label>
+          <input type="number" name="cantidad[]" required>
+
+          <label>Sabor:</label>
+          <select name="sabor[]" required>
+            <option value="">--Seleccionar--</option>
+            <option value="Limon">Limón</option>
+            <option value="Pimienta">Pimienta</option>
+            <option value="Picante">Picante</option>
+          </select>
+
+          <label>Observaciones:</label>
+          <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
+        </div>
+      </div>
+
+      <div class="boton-centro" style="margin-top: 10px;">
+        <button type="button" id="btnAgregarProducto">Agregar producto</button>
+      </div>
+
+      <hr></hr>
+
+      
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" id="nombre" required>
+      
+      <label for="documento">Documento:</label>
+      <input type="number" name="documento" value="{{pedido.nombre if pedido else ''}}" id="documento" required>
+
+      <label for="telefono">Teléfono:</label>
+      <input type="number" name="telefono" value="{{pedido.telefono if pedido else ''}}" id="telefono" required>
+
+      <label>Forma de entrega:</label><br>
+      <label><input type="radio" name="forma_entrega" value="Domicilio"> Domicilio</label>
+      <label><input type="radio" name="forma_entrega" value="Recoger en sede"> Recoger en sede</label>
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" name="direccion" id="direccion" required>
+
+      <br></br>
+      <button type="submit" id="enviarPedido">Enviar pedido</button>
+      <div class="boton-centro" style="margin-top: 10px;">
+        <a id="backy" href="{{ url_for('index') }}">Volver a la página principal</a>
+      </div>
+    </form>
+
+    <!--
+    <h1>Opciones del despachador</h1>
+
+    <form action="/pedidos" method="get">
+      <button type="submit">Ver pedidos por gestionar</button>
+    </form>
+    -->
+  </div>
+
+  <footer>
+    <p>Delicious Chips &copy; 2025</p>
+  </footer>
+
+  <script>
+    const contenedorProductos = document.getElementById('productos-container');
+    const btnAgregar = document.getElementById('btnAgregarProducto');
+
+    function crearProductoHTML() {
+      const div = document.createElement('div');
+      div.className = 'producto-item';
+      div.style.marginBottom = '10px';
+      div.innerHTML = `
         <label>Producto:</label>
-
         <select name="producto[]" required>
           <option value="">--Seleccionar--</option>
           <option value="Papas">Papas</option>
@@ -46,106 +130,63 @@
           <option value="Picante">Picante</option>
         </select>
 
-        <div class="full-width">
-          <label for="observacion">Observaciones:</label>
+        <label>Observaciones:</label>
         <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
-    </div>
 
-      </div>
-  </div>
-
-  <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-    <button type="button" id="btnAgregarProducto">Agregar producto</button>
-  </div>
-    <div>
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required>
-    </div>
-
-    <div>
-      <label for="documento">Documento:</label>
-      <input type="number" name="documento" id="documento" required>
-    </div>
-
-    <div>
-      <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" id="telefono" required>
-    </div>
-
-    <div class="full-width">
-      <label>Forma de entrega:</label><br>
-      <label><input type="radio" name="formaEntrega" value="domicilio"> Domicilio</label>
-      <label><input type="radio" name="formaEntrega" value="sede"> Recoger en sede</label>
-    </div>
-
-    <div>
-      <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" required>
-    </div>
-
-    <button type="submit" id="enviarPedido">Enviar pedido</button>
-    <div class="volver">
-      <a id="backy" href="{{ url_for('index') }}">Volver a la página principal</a>
-    </div>
-  </form>
-
-<h1>Opciones del despachador</h1>
-
-  <form action="/pedidos" method="get">
-    <button type="submit">Ver pedidos por gestionar</button>
-  </form>
-
-<script>
-  const contenedorProductos = document.getElementById('productos-container');
-  const btnAgregar = document.getElementById('btnAgregarProducto');
-
-  function crearProductoHTML() {
-    const div = document.createElement('div');
-    div.className = 'producto-item';
-    div.style.marginBottom = '10px';
-    div.innerHTML = `
-      <label>Producto:</label>
-      <select name="producto[]" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Papas">Papas</option>
-        <option value="Platanitos">Platanitos</option>
-        <option value="Rosquillas">Rosquillas</option>
-      </select>
-
-      <label>Cantidad:</label>
-      <input type="number" name="cantidad[]" required>
-
-      <label>Sabor:</label>
-      <select name="sabor[]" required>
-        <option value="">--Seleccionar--</option>
-        <option value="Limon">Limón</option>
-        <option value="Pimienta">Pimienta</option>
-        <option value="Picante">Picante</option>
-      </select>
-
-      <label>Observaciones:</label>
-      <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
-
-      <div style="text-align: right; margin-top: 5px;">
-        <button type="button" class="btnEliminar" onclick="eliminarProducto(this)">Quitar</button>
-      </div>
-    `;
-    return div;
-  }
-
-  function eliminarProducto(boton) {
-    const productos = document.querySelectorAll('.producto-item');
-    if (productos.length > 1) {
-      boton.closest('.producto-item').remove();
+        <div style="text-align: right; margin-top: 5px;">
+          <button type="button" class="btnEliminar" onclick="eliminarProducto(this)">Quitar</button>
+        </div>
+      `;
+      return div;
     }
-  }
 
-  btnAgregar.addEventListener('click', () => {
-    const nuevo = crearProductoHTML();
-    contenedorProductos.appendChild(nuevo);
-  });
-</script>
+    function eliminarProducto(boton) {
+      const productos = document.querySelectorAll('.producto-item');
+      if (productos.length > 1) {
+        boton.closest('.producto-item').remove();
+      }
+    }
 
+    btnAgregar.addEventListener('click', () => {
+      const nuevo = crearProductoHTML();
+      contenedorProductos.appendChild(nuevo);
+    });
+
+    window.addEventListener('load', () => {
+      const pedidoJSON = localStorage.getItem('pedidoGuardado');
+      if (!pedidoJSON) return;
+
+      const pedido = JSON.parse(pedidoJSON);
+
+      // Cliente
+      document.querySelector('[name="nombre"]').value = pedido.nombre;
+      document.querySelector('[name="documento"]').value = pedido.documento;
+      document.querySelector('[name="telefono"]').value = pedido.telefono;
+      document.querySelector('[name="direccion"]').value = pedido.direccion;
+
+      // Forma de entrega
+      const radios = document.querySelectorAll('[name="forma_entrega"]');
+      radios.forEach(radio => {
+        if (radio.value === pedido.forma_entrega) radio.checked = true;
+      });
+
+      // Limpiar productos actuales
+      document.getElementById('productos-container').innerHTML = '';
+
+      // Agregar productos guardados
+      pedido.productos.forEach(p => {
+        const div = crearProductoHTML();
+        div.querySelector('[name="producto[]"]').value = p.producto;
+        div.querySelector('[name="cantidad[]"]').value = p.cantidad;
+        div.querySelector('[name="sabor[]"]').value = p.sabor;
+        div.querySelector('[name="observaciones[]"]').value = p.observaciones;
+        document.getElementById('productos-container').appendChild(div);
+      });
+
+      // Limpiar el storage
+      localStorage.removeItem('pedidoGuardado');
+    });
+  </script>
 
 </body>
 </html>

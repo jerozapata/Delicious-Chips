@@ -139,7 +139,7 @@ def registrar_pedido():
     exito = request.args.get('exito')
     return render_template('registrar_pedido.html', exito=exito)
 
-@app.route('/reg_pedido', methods=['POST'])
+@app.route('/reg_pedido', methods=['GET','POST'])
 def reg_pedido():
 
     productos = request.form.getlist('producto[]')
@@ -153,8 +153,41 @@ def reg_pedido():
     nombre = request.form['nombre']
     documento = request.form['documento']
     telefono = request.form['telefono']
-    forma_entrega = request.form['formaEntrega']
+    forma_entrega = request.form['forma_entrega']
     direccion = request.form['direccion']
+
+    pedido = {
+        'nombre': nombre,
+        'documento': documento,
+        'telefono': telefono,
+        'forma_entrega': forma_entrega,
+        'direccion': direccion,
+        'productos': [
+            {
+                'producto': prod,
+                'cantidad': int(cant),
+                'sabor': sabor,
+                'observaciones': obs,
+            } 
+            for prod, cant, sabor, obs in zip(productos, cantidades, sabores, observaciones_list)
+        ]
+    }
+    
+    return render_template('confirmacion_pedido.html', pedido=pedido)
+
+@app.route('/confirmar_pedido', methods=['POST'])
+def confirmar_pedido():
+    productos = request.form.getlist('producto[]')
+    cantidades = request.form.getlist('cantidad[]')
+    sabores = request.form.getlist('sabor[]')
+    observaciones_list = request.form.getlist('observaciones[]')
+
+    nombre = request.form['nombre']
+    documento = request.form['documento']
+    telefono = request.form['telefono']
+    forma_entrega = request.form['forma_entrega']
+    direccion = request.form['direccion']
+
     hora = datetime.now()
     hora_for = hora.strftime('%Y-%m-%d %H:%M:%S')
     
@@ -279,7 +312,7 @@ def actualizar_pedido(pedido_id):
     pedido['documento'] = request.form['documento']
     pedido['telefono'] = request.form['telefono']
     pedido['direccion'] = request.form['direccion']
-    pedido['forma_entrega'] = request.form['formaEntrega']
+    pedido['forma_entrega'] = request.form['forma_entrega']
     pedido['estado'] = request.form['estado']
 
     #ahora sobrescribe el archivo
@@ -374,11 +407,12 @@ def cancelar_pedido(pedido_id):
         return render_template("estado_pedido.html", mensaje=mensaje, clase_color="verde", pedido=pedido, pedido_id=pedido_id)
     except Exception as e:
         return f"Error al cancelar el pedido: {e}", 500
+    
 
 if __name__ == '__main__':
     # Configuración para Render
-    port = int(os.environ.get('PORT', 5000))  
-    app.run(debug=True, host='0.0.0.0', port=port)
+    #port = int(os.environ.get('PORT', 5000))  
+    #app.run(debug=True, host='0.0.0.0', port=port)
 
     # Para desarrollo local, puedes usar:
-    #app.run(debug=True, port=5000)  
+    app.run(debug=True, port=5000)  

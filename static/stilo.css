@@ -1,45 +1,444 @@
-body{
-    background: lightsteelblue;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-h1{
-    text-align: center;
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-#bar{
-    text-align: left;
+
+.hero .overlay {
+  animation: slideInDown 1s ease-out;
 }
-.tope {
-  background-color: #004080; 
+
+
+.btn {
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  background-color: #d62828;
+}
+
+
+.contenido-principal {
+  animation: fadeInUp 1s ease-out;
+}
+
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #fffbea;
+  color: #333;
+}
+
+.hero {
+  background-image: url('/static/hero-chips.png');  
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  position: relative;
+  color: white;
+  text-align: center;
+  z-index: 0;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+.overlay h1 span {
+  color: #fcb900;
+}
+
+.navbar {
+  background-color: #ffd166;
   padding: 10px 0;
+  position: relative;
+  z-index: 10;
 }
 
 #bar {
+  list-style: none;
   display: flex;
-  justify-content: center;   
-  gap: 30px;                   
-  list-style: none;         
-  margin: 0;
+  justify-content: center;
+  gap: 30px;
   padding: 0;
+  margin: 0;
 }
-
-#bar li {
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-#bar li:hover {
-  color: #aad4ff;
-}
-
 
 #bar li a {
-    color: white;
-    text-decoration: none;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
 }
 
-
 #bar li a:hover {
-    color: #aad4ff;
-    text-decoration: underline;
+  color: #d62828;
+}
+#bar li.admin-link a {
+  background-color: #d62828;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+#bar li.admin-link a:hover {
+  background-color: #9d0208;
+  color: #fff;
+}
+
+.galeria-productos {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.grid-productos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.producto {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 15px;
+  text-align: center;
+  width: 220px;
+  transition: transform 0.3s;
+}
+
+.producto img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.producto:hover {
+  transform: scale(1.05);
+}
+
+.subtexto {
+  text-align: center;
+  font-size: 16px;
+  margin: 25px 0 20px;
+}
+
+.boton-centro {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.contenido-principal {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.cliente, .admin {
+  flex: 1;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.img-sec {
+  width: 80%;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+
+.btn {
+  padding: 12px 20px;
+  background-color: #f77f00;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #d62828;
+}
+
+.btn-secundario {
+  background: #fff;
+  border: 2px solid #f77f00;
+  color: #f77f00;
+}
+
+.btn-secundario:hover {
+  background: #f77f00;
+  color: #fff;
+}
+
+footer {
+  text-align: center;
+  background: #fcbf49;
+  padding: 15px;
+  margin-top: 50px;
+}
+
+/* --- FORMULARIO DE PEDIDO --- */
+
+form {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 30px auto;
+  font-size: 16px;
+}
+
+form h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-top: 5px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.producto-item {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  background: #fffbea;
+}
+
+.producto-item label {
+  margin-top: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+input[type="radio"] {
+  margin-right: 8px;
+}
+
+button,
+.btnEliminar {
+  padding: 10px 18px;
+  margin-top: 20px;
+  border: none;
+  background-color: #f77f00;
+  color: white;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover,
+.btnEliminar:hover {
+  background-color: #d62828;
+}
+
+.boton-centro {
+  text-align: center;
+}
+
+.volver {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.volver a {
+  color: #d62828;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.volver a:hover {
+  text-decoration: underline;
+}
+
+/* Título */
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.subtexto {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+/* Confirmacion de Pedido */
+.confirmar-pedido {
+  padding: 40px 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.confirmar-pedido .titulo {
+  text-align: center;
+  font-size: 2.2em;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.confirmar-pedido .grid-informacion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  background: #f0f8ff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.confirmar-pedido section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.confirmar-pedido section h2 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #f77f00;
+}
+.confirmar-pedido section ul {
+  list-style: none;
+  padding: 0;
+}
+.confirmar-pedido h1{
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.confirmar-pedido h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  color: #f77f00;
+  border-bottom: 2px solid #f77f00;
+  padding-bottom: 5px;
+}
+
+.confirmar-pedido table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.confirmar-pedido td {
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.confirmar-pedido .botones-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.confirmar-pedido .botones-acciones form {
+  flex: 1;
+  max-width: 220px;
+}
+
+.confirmar-pedido .btn,
+.confirmar-pedido .btn-secundario {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.confirmar-pedido .btn {
+  background-color: #f77f00;
+  color: white;
+  border: none;
+}
+
+.confirmar-pedido .btn:hover {
+  background-color: #d62828;
+}
+
+.confirmar-pedido .btn-secundario {
+  background: white;
+  border: 2px solid #f77f00;
+  color: #f77f00;
+}
+
+.confirmar-pedido .btn-secundario:hover {
+  background: #f77f00;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .confirmar-pedido .grid-informacion {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmar-pedido .botones-acciones {
+    flex-direction: column;
+    gap: 20px;
+  }
 }

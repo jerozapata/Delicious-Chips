@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Pedido</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
+</head>
+<body>
+    
+    <div class="confirmar-pedido">
+        <h1>Confirma tu Pedido</h1>
+        <div class="grid-informacion">
+            <section class="infromacion-cliente">
+                <h2>Información del Cliente</h2>
+                <ul>
+                    <li><strong>Nombre:</strong> {{ pedido.nombre }}</li>
+                    <li><strong>Documento:</strong> {{ pedido.documento }}</li>
+                    <li><strong>Teléfono:</strong> {{ pedido.telefono }}</li>
+                    <li><strong>Entrega:</strong> {{ pedido.forma_entrega }}</li>
+                    <li><strong>Dirección:</strong> {{ pedido.direccion }}</li>
+                </ul>
+            </section>
+            <section class="productos-seleccionados">
+                <h2>Productos Seleccionados</h2>
+                <ul>
+                    {% for p in pedido.productos %}
+                        <li>{{ p.cantidad }}x {{ p.producto }} ({{ p.sabor }}) - {{ p.observaciones }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+        <div class="botones-acciones">
+            <form action="{{ url_for('confirmar_pedido') }}" method="post">
+
+                {% for p in pedido.productos %}
+                    <input type="hidden" name="producto[]" value="{{ p.producto }}">
+                    <input type="hidden" name="cantidad[]" value="{{ p.cantidad }}">
+                    <input type="hidden" name="sabor[]" value="{{ p.sabor }}">
+                    <input type="hidden" name="observaciones[]" value="{{ p.observaciones }}">
+                {% endfor %}
+
+                <input type="hidden" name="nombre" value="{{ pedido.nombre }}">
+                <input type="hidden" name="documento" value="{{ pedido.documento }}">
+                <input type="hidden" name="telefono" value="{{ pedido.telefono }}">
+                <input type="hidden" name="forma_entrega" value="{{ pedido.forma_entrega }}">
+                <input type="hidden" name="direccion" value="{{ pedido.direccion }}">
+                <input type="hidden" name="estado" value="{{ pedido.estado | default('Registrado') }}">
+                
+                
+                
+                <button type="submit" class="btn">✅ Confirmar Pedido</button>
+            </form>
+
+            <form action="{{ url_for('registrar_pedido') }}" method="get" onsubmit="guardarDatosEnLocalStorage()">
+                <button type="submit" class="btn-secundario">✏️ Modificar Pedido</button>
+            </form>
+
+        </div>
+    </div>
+
+<script>
+
+    function guardarPedido() {
+        const pedido = {
+            nombre: "{{ pedido.nombre }}",
+            documento: "{{ pedido.documento }}",
+            telefono: "{{ pedido.telefono }}",
+            forma_entrega: "{{ pedido.forma_entrega }}",
+            direccion: "{{ pedido.direccion }}",
+            productos: [
+                {% for p in pedido.productos %}
+                {
+                    producto: "{{ p.producto }}",
+                    cantidad: "{{ p.cantidad }}",
+                    sabor: "{{ p.sabor }}",
+                    observaciones: "{{ p.observaciones }}"
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ]
+        };
+        localStorage.setItem('pedidoGuardado', JSON.stringify(pedido));
+    }
+    window.onload = guardarPedido;
+</script>
+
+</body>
+</html>

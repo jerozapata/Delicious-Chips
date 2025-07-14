@@ -1,13 +1,13 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #e8f4fc;
+  background-color: #fffbea;
   margin: 0;
   padding: 20px;
-  color: #003366;
+  color: #333;
 }
 
 h1 {
-  color: #004080;
+  color: #333;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -39,7 +39,7 @@ label {
 input, select, textarea {
   width: 100%;
   padding: 8px;
-  border: 1px solid #a9c6e8;
+  border: 1px solid #e7e8a9;
   border-radius: 6px;
   box-sizing: border-box;
 }
@@ -49,7 +49,7 @@ textarea {
 }
 
 button {
-  background-color: #4da6ff;
+  background-color: #f77f00;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -61,7 +61,7 @@ button {
 }
 
 button:hover {
-  background-color: #3399ff;
+  background-color: #d62828;
 }
 
 .full-width {
@@ -78,7 +78,7 @@ button:hover {
 
 .pedido-card {
   background-color: #ffffff;
-  border: 1px solid #a9c6e8;
+  border: 1px solid #e8e8a9;
   padding: 16px;
   border-radius: 10px;
   box-shadow: 0 0 6px rgba(0, 80, 160, 0.05);
@@ -93,21 +93,21 @@ button:hover {
 .pedido-card strong {
   display: block;
   margin-bottom: 6px;
-  color: #004080;
+  color: #333;
 }
 
 .volver {
   display: block;
   text-align: center;
   margin-top: 40px;
-  color: #004080;
+  color: #f77f00;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .volver:hover {
-  color: #007bff;
+  color: #d62828;
   text-decoration: underline;
 }
 
