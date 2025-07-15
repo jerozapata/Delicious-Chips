@@ -3,11 +3,14 @@ from datetime import datetime
 from collections import defaultdict
 import os
 from models import db, Pedido, Producto, Cliente, DetallePedido, Contacto
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 app = Flask(__name__, instance_relative_config=True)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base_datos_delicious.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -459,8 +462,8 @@ def cancelar_pedido(pedido_id):
   
 if __name__ == '__main__':
     # Configuración para Render
-    #port = int(os.environ.get('PORT', 5000))  
-    #app.run(debug=True, host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 5000))  
+    app.run(debug=True, host='0.0.0.0', port=port)
 
     # Para desarrollo local, puedes usar:
-    app.run(debug=True, port=5000)  
+    #app.run(debug=True, port=5000)  
