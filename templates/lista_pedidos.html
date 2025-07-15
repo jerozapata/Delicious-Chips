@@ -20,9 +20,10 @@
 
           <p>
             <strong>Estado:</strong>
-            <span class="estado-label estado-{{ pedido.estado | default('Registrado') | replace(' ', '\\ ') }}">
-              {{ pedido.estado | default('Registrado') | title }}
+            <span class="estado-label estado-{{ pedido.estado | default('registrado') }}">
+              {{ pedido.estado | default('Registrado') }}
             </span>
+
           </p>
           
           <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
@@ -51,7 +52,7 @@
       <p style="text-align: center;">No hay pedidos pendientes.</p>
     {% endif %}
 
-    <a class="volver" href="{{ url_for('registrar_pedido') }}">← Volver a pedidos</a>
+    <a class="volver" href="{{ url_for('index') }}">← Volver a la página principal</a>
   </div>
 
   <footer>

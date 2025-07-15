@@ -18,9 +18,11 @@
         <div class="botones-acciones" style="margin-top: 40px;">
             <a href="{{ url_for('factura', pedido_id=pedido_id) }}"><button class="btn">Ver factura</button></a>
             
-            <a href="{{ url_for('registrar_pedido') }}">
-                <button class="btn-secundario">Registrar nuevo pedido</button>
-            </a>
+        
+            <form action="{{ url_for('verificar_cliente') }}" method="get" onsubmit="localStorage.clear()">
+                <button class="btn">Registrar nuevo pedido</button>
+            </form>
+
             
     </div>
 

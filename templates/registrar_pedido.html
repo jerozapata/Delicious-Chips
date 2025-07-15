@@ -42,27 +42,46 @@
           <label>Producto:</label>
 
           <select name="producto[]" required>
-            <option value="">--Seleccionar--</option>
-            <option value="Papas">Papas</option>
-            <option value="Platanitos">Platanitos</option>
-            <option value="Rosquillas">Rosquillas</option>
+            <option value="">--Selecciona un producto--</option>
+            {% for p in productos %}
+              <option value="{{ p.nombre }}|{{ p.sabor }}|{{ p.gramaje }}|{{ p.precio_unitario }}">
+                {{ p.nombre }} - {{ p.sabor }} - {{ p.gramaje }} - ${{ "{:,.0f}".format(p.precio_unitario).replace(",", ".") }}
+              </option>
+            {% endfor %}
           </select>
 
           <label>Cantidad:</label>
           <input type="number" name="cantidad[]" required>
 
-          <label>Sabor:</label>
-          <select name="sabor[]" required>
-            <option value="">--Seleccionar--</option>
-            <option value="Limon">Limón</option>
-            <option value="Pimienta">Pimienta</option>
-            <option value="Picante">Picante</option>
-          </select>
-
           <label>Observaciones:</label>
           <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
         </div>
       </div>
+            <!-- PLANTILLA OCULTA para clonar -->
+      <template id="plantilla-producto">
+        <div class="producto-item">
+          <label>Producto:</label>
+          <select name="producto[]" required>
+            <option value="">--Selecciona un producto--</option>
+            {% for p in productos %}
+              <option value="{{ p.nombre }}|{{ p.sabor }}|{{ p.gramaje }}|{{ p.precio_unitario }}">
+                {{ p.nombre }} - {{ p.sabor }} - {{ p.gramaje }} - ${{ "{:,.0f}".format(p.precio_unitario).replace(",", ".") }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <label>Cantidad:</label>
+          <input type="number" name="cantidad[]" required>
+
+          <label>Observaciones:</label>
+          <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
+
+          <div style="text-align: right; margin-top: 5px;">
+            <button type="button" class="btnEliminar" onclick="eliminarProducto(this)">Quitar</button>
+          </div>
+        </div>
+      </template>
+
 
       <div class="boton-centro" style="margin-top: 10px;">
         <button type="button" id="btnAgregarProducto">Agregar producto</button>
@@ -72,20 +91,21 @@
 
       
       <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" value="{{ nombre }}" {% if cliente_existente %}readonly{% endif %} required>
+      <input type="text" name="nombre" id="nombre" value="{{ nombre }}" {% if cliente_existente %}readonly{% endif %} >
       
       <label for="documento">Documento:</label>
-      <input type="number" name="documento" id="documento" value="{{ cedula }}" {% if cliente_existente %}readonly{% endif %} required>
+      <input type="number" name="documento" id="documento" value="{{ cedula }}" {% if cliente_existente %}readonly{% endif %} >
 
       <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %}  required>
+      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %}  >
 
       <label>Forma de entrega:</label><br>
-      <label><input type="radio" name="forma_entrega" value="Domicilio"> Domicilio</label>
+      <label><input type="radio" name="forma_entrega" value="Domicilio" required> Domicilio</label>
       <label><input type="radio" name="forma_entrega" value="Recoger en sede"> Recoger en sede</label>
 
+
       <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} required>
+      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} >
 
       <br></br>
       <button type="submit" id="enviarPedido">Enviar pedido</button>
@@ -111,40 +131,14 @@
     const contenedorProductos = document.getElementById('productos-container');
     const btnAgregar = document.getElementById('btnAgregarProducto');
 
+    // Crear nuevo producto desde plantilla oculta
     function crearProductoHTML() {
-      const div = document.createElement('div');
-      div.className = 'producto-item';
-      div.style.marginBottom = '10px';
-      div.innerHTML = `
-        <label>Producto:</label>
-        <select name="producto[]" required>
-          <option value="">--Seleccionar--</option>
-          <option value="Papas">Papas</option>
-          <option value="Platanitos">Platanitos</option>
-          <option value="Rosquillas">Rosquillas</option>
-        </select>
-
-        <label>Cantidad:</label>
-        <input type="number" name="cantidad[]" required>
-
-        <label>Sabor:</label>
-        <select name="sabor[]" required>
-          <option value="">--Seleccionar--</option>
-          <option value="Limon">Limón</option>
-          <option value="Pimienta">Pimienta</option>
-          <option value="Picante">Picante</option>
-        </select>
-
-        <label>Observaciones:</label>
-        <textarea name="observaciones[]" rows="2" placeholder="Escribe aquí si deseas quitar sal, agregar limón, etc."></textarea>
-
-        <div style="text-align: right; margin-top: 5px;">
-          <button type="button" class="btnEliminar" onclick="eliminarProducto(this)">Quitar</button>
-        </div>
-      `;
-      return div;
+      const plantilla = document.getElementById('plantilla-producto');
+      const clon = plantilla.content.cloneNode(true);
+      return clon;
     }
 
+    // Eliminar producto
     function eliminarProducto(boton) {
       const productos = document.querySelectorAll('.producto-item');
       if (productos.length > 1) {
@@ -152,12 +146,23 @@
       }
     }
 
+    // Agregar producto al hacer clic
     btnAgregar.addEventListener('click', () => {
       const nuevo = crearProductoHTML();
       contenedorProductos.appendChild(nuevo);
     });
 
-    window.addEventListener('load', () => {
+    // ✅ COMBINAMOS TODAS LAS FUNCIONES EN UN SOLO window.onload
+    window.onload = function () {
+      const clienteExistente = "{{ cliente_existente | default(false) }}";
+
+      // 🧹 Si es un nuevo cliente, limpiamos localStorage
+      if (!clienteExistente) {
+        localStorage.removeItem('pedidoGuardado');
+        return; // Salimos sin intentar cargar datos
+      }
+
+      // ✅ Si es un cliente existente, tratamos de cargar el pedido anterior
       const pedidoJSON = localStorage.getItem('pedidoGuardado');
       if (!pedidoJSON) return;
 
@@ -176,56 +181,59 @@
       });
 
       // Limpiar productos actuales
-      document.getElementById('productos-container').innerHTML = '';
+      contenedorProductos.innerHTML = '';
 
-      // Agregar productos guardados
+      // Agregar productos desde JSON
       pedido.productos.forEach(p => {
         const div = crearProductoHTML();
-        div.querySelector('[name="producto[]"]').value = p.producto;
+        const select = div.querySelector('[name="producto[]"]');
+        const valorBuscado = `${p.producto}|${p.sabor}|${p.gramaje}|${p.precio_unitario}`;
+
+        for (const option of select.options) {
+          if (option.value === valorBuscado) {
+            option.selected = true;
+            break;
+          }
+        }
+
         div.querySelector('[name="cantidad[]"]').value = p.cantidad;
-        div.querySelector('[name="sabor[]"]').value = p.sabor;
         div.querySelector('[name="observaciones[]"]').value = p.observaciones;
-        document.getElementById('productos-container').appendChild(div);
+        contenedorProductos.appendChild(div);
       });
 
-      // Limpiar el storage
       localStorage.removeItem('pedidoGuardado');
-    });
+    };
+
+    // Validación del formulario antes de enviar
     function validarFormulario() {
-  const productos = document.querySelectorAll('select[name="producto[]"]');
-  const cantidades = document.querySelectorAll('input[name="cantidad[]"]');
-  const sabores = document.querySelectorAll('select[name="sabor[]"]');
-  const formaEntrega = document.querySelector('input[name="forma_entrega"]:checked');
+      const productos = document.querySelectorAll('select[name="producto[]"]');
+      const cantidades = document.querySelectorAll('input[name="cantidad[]"]');
+      const formaEntrega = document.querySelector('input[name="forma_entrega"]:checked');
 
-  for (let i = 0; i < productos.length; i++) {
-    if (productos[i].value === "") {
-      alert("⚠️ Debes seleccionar un producto.");
-      productos[i].focus();
-      return false;
+      for (let i = 0; i < productos.length; i++) {
+        if (productos[i].value === "") {
+          alert("⚠️ Debes seleccionar un producto.");
+          productos[i].focus();
+          return false;
+        }
+
+        if (cantidades[i].value === "" || parseInt(cantidades[i].value) <= 0) {
+          alert("⚠️ La cantidad debe ser mayor a cero.");
+          cantidades[i].focus();
+          return false;
+        }
+      }
+
+      if (!formaEntrega) {
+        alert("⚠️ Debes seleccionar una forma de entrega.");
+        return false;
+      }
+
+      return true;
     }
-
-    if (cantidades[i].value === "" || parseInt(cantidades[i].value) <= 0) {
-      alert("⚠️ La cantidad debe ser un número mayor a cero.");
-      cantidades[i].focus();
-      return false;
-    }
-
-    if (sabores[i].value === "") {
-      alert("⚠️ Debes seleccionar un sabor.");
-      sabores[i].focus();
-      return false;
-    }
-  }
-
-  if (!formaEntrega) {
-    alert("⚠️ Debes seleccionar una forma de entrega.");
-    return false;
-  }
-
-  return true; // Si todo está bien, se envía el formulario
-}
-
   </script>
+
+
 
 </body>
 </html>

@@ -24,7 +24,14 @@
                 <h2>Productos Seleccionados</h2>
                 <ul>
                     {% for p in pedido.productos %}
-                        <li>{{ p.cantidad }}x {{ p.producto }} ({{ p.sabor }}) - {{ p.observaciones }}</li>
+                        <li>
+                            {{ p.cantidad }}x {{ p.producto }} ({{ p.sabor }}, {{  p.gramaje  }})
+                            - ${{ "{:,.0f}".format(p.precio_unitario|float).replace(",", ".") }} c/u
+
+                            {% if p.observaciones %}
+                                <br><em>📝 {{ p.observaciones }}</em>
+                            {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </section>
@@ -32,10 +39,9 @@
         <div class="botones-acciones">
             <form action="{{ url_for('confirmar_pedido') }}" method="post">
 
-                {% for p in pedido.productos %}
-                    <input type="hidden" name="producto[]" value="{{ p.producto }}">
+                {% for p in productos %}
+                    <input type="hidden" name="producto[]" value="{{ p.producto }}|{{ p.sabor }}|{{ p.gramaje }}|{{ p.precio_unitario }}">
                     <input type="hidden" name="cantidad[]" value="{{ p.cantidad }}">
-                    <input type="hidden" name="sabor[]" value="{{ p.sabor }}">
                     <input type="hidden" name="observaciones[]" value="{{ p.observaciones }}">
                 {% endfor %}
 
@@ -58,30 +64,34 @@
         </div>
     </div>
 
-<script>
+    <script>
+        function guardarPedido() {
+            const pedido = {
+                nombre: "{{ pedido.nombre }}",
+                documento: "{{ pedido.documento }}",
+                telefono: "{{ pedido.telefono }}",
+                forma_entrega: "{{ pedido.forma_entrega }}",
+                direccion: "{{ pedido.direccion }}",
+                productos: [
+                    {% for p in pedido.productos %}
+                    {
+                        producto: "{{ p.producto }}",
+                        sabor: "{{ p.sabor }}",
+                        gramaje: "{{ p.gramaje }}",
+                        precio_unitario: {{ p.precio_unitario }},
+                        cantidad: {{ p.cantidad }},
+                        observaciones: "{{ p.observaciones | default('') }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+            };
 
-    function guardarPedido() {
-        const pedido = {
-            nombre: "{{ pedido.nombre }}",
-            documento: "{{ pedido.documento }}",
-            telefono: "{{ pedido.telefono }}",
-            forma_entrega: "{{ pedido.forma_entrega }}",
-            direccion: "{{ pedido.direccion }}",
-            productos: [
-                {% for p in pedido.productos %}
-                {
-                    producto: "{{ p.producto }}",
-                    cantidad: "{{ p.cantidad }}",
-                    sabor: "{{ p.sabor }}",
-                    observaciones: "{{ p.observaciones }}"
-                }{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ]
-        };
-        localStorage.setItem('pedidoGuardado', JSON.stringify(pedido));
-    }
-    window.onload = guardarPedido;
+            localStorage.setItem('pedidoGuardado', JSON.stringify(pedido));
+        }
+
+        window.onload = guardarPedido;
 </script>
+
 
 </body>
 </html>

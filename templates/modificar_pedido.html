@@ -49,8 +49,8 @@
 
                 <label>Forma de entrega:</label>
                 <select name="forma_entrega">
-                    <option value="Domicilio"{% if pedido.get('forma_entrega') == 'domicilio' %}selected{% endif %}>Domicilio</option>
-                    <option value="Recoger en sede"{% if pedido.get('forma_entrega') == 'sede' %}selected{% endif %}>Recoger en sede</option>
+                    <option value="Domicilio"{% if pedido.get('forma_entrega') == 'Domicilio' %}selected{% endif %}>Domicilio</option>
+                    <option value="Recoger en sede"{% if pedido.get('forma_entrega') == 'Recoger en sede' %}selected{% endif %}>Recoger en sede</option>
                 </select><br><br>
 
                 <label for="estado">Estado del pedido:</label>

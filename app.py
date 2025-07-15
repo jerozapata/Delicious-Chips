@@ -2,133 +2,49 @@ from flask import Flask, render_template, redirect, request, url_for
 from datetime import datetime
 from collections import defaultdict
 import os
+from models import db, Pedido, Producto, Cliente, DetallePedido, Contacto
 
-app = Flask(__name__)
 
-ARCHIVO_PEDIDOS = 'pedidos.txt'
+app = Flask(__name__, instance_relative_config=True)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base_datos_delicious.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
 
 def leer_pedidos():
-    pedidos_dict = defaultdict(lambda:{
-          
-        "productos": [],
-        "nombre": "",
-        "documento": "",
-        "telefono": "",
-        "forma_entrega": "",
-        "direccion": "",
-        "hora": None
-    })
+    pedidos = Pedido.query.all()
+    resultado = []
 
-    try:
-        with open(ARCHIVO_PEDIDOS, 'r', encoding='utf-8') as f:
-            
-            for linea in f:
-                partes = linea.strip().split(',')
-                if len(partes) == 12:
-                    # un producto por pedido
-                    try:
-                        pid = int(partes[0])
-                        producto = partes[1]
-                        cantidad = int(partes[2])
-                        sabor = partes[3]
-                        observaciones = partes[4]
-                        nombre = partes[5]
-                        documento = partes[6]
-                        telefono = partes[7]
-                        forma_entrega = partes[8]
-                        direccion = partes[9]
-                        hora = datetime.strptime(partes[10], '%Y-%m-%d %H:%M:%S')
-                        estado = partes[11].strip()
-                        pedidos_dict[pid]['estado'] = estado
+    for pedido in pedidos:
+        cliente = pedido.cliente
+        productos = []
 
-                        pedidos_dict[pid].update({
-                            "id": pid,
-                            "nombre": nombre,
-                            "documento": documento,
-                            "telefono": telefono,
-                            "forma_entrega": forma_entrega,
-                            "direccion": direccion,
-                            "hora": hora
-                        })
+        for detalle in pedido.detalles:
+            producto = detalle.producto
+            productos.append({
+                'producto': producto.nombre,
+                'sabor': producto.sabor,
+                'gramaje': producto.gramaje,
+                'cantidad': detalle.cantidad,
+                'precio_unitario': producto.precio_unitario,
+                'observaciones': detalle.observaciones or 'Sin observaciones'
+            })
+        
+        resultado.append({
+            'id': pedido.id,
+            'nombre': cliente.nombre,
+            'documento': cliente.documento,
+            'telefono': cliente.telefono,
+            'direccion': cliente.direccion,
+            'forma_entrega': pedido.forma_entrega,
+            'hora': pedido.fecha_hora,
+            'estado': pedido.estado,
+            'productos': productos
+        })
 
-                        pedidos_dict[pid]["productos"].append({
-                            "producto": producto,
-                            "cantidad": cantidad,
-                            "sabor": sabor,
-                            "observaciones": observaciones
-                        })
-                    except Exception as e:
-                        print(f"⚠️ Error procesando línea (formato viejo): {linea.strip()} | {e}")
-                        continue
-
-                elif len(partes) >= 8:
-                    # mas de un producto por pedido
-                    try:
-                        pid = int(partes[0])
-                        detalles = partes[1]
-                        
-                        nombre = partes[2]
-                        documento = partes[3]
-                        telefono = partes[4]
-                        forma_entrega = partes[5]
-                        direccion = partes[6]
-                        hora = datetime.strptime(partes[7], '%Y-%m-%d %H:%M:%S')
-                        estado = partes[8].strip() if len(partes) > 8 else 'registrado'
-                        pedidos_dict[pid]['estado'] = estado
-                        
-                        pedidos_dict[pid].update({
-                            "id": pid,
-                            "nombre": nombre,
-                            "documento": documento,
-                            "telefono": telefono,
-                            "forma_entrega": forma_entrega,
-                            "direccion": direccion,
-                            "hora": hora
-                        })
-
-
-                        productos = detalles.split('|')
-                        for p in productos:
-                            try:
-                                producto, cantidad, sabor, observaciones = p.split('-', 3)
-                                pedidos_dict[pid]["productos"].append({
-                                    "producto": producto,
-                                    "cantidad": int(cantidad),
-                                    "sabor": sabor,
-                                    "observaciones": observaciones
-                                })
-                            except ValueError:
-                                print(f"Error en línea de producto mal formada: '{p}'")
-                    except Exception as e:
-                        print(f"Error procesando línea (formato nuevo): {linea.strip()} | {e}")
-                        continue            
-                else:
-                    print(f"Línea con formato desconocido: {linea.strip()}")
-
-
-    except FileNotFoundError:
-        print("Archivo no encontrado.")
-        return []
-    return sorted(pedidos_dict.values(), key=lambda x: x['hora'])
-
-def obtener_nuevo_id():
-    """
-    Genera un nuevo ID secuencial basado en el último ID del archivo de pedidos.
-    Si no hay pedidos aún, empieza en 1.
-    """
-    try:
-        with open(ARCHIVO_PEDIDOS, 'r', encoding='utf-8') as f:
-            lineas = f.readlines()
-            if not lineas:
-                return 1
-            ultima_linea = lineas[-1].strip()
-            partes = ultima_linea.split(',')
-            if partes and partes[0].isdigit():
-                return int(partes[0]) + 1
-            else:
-                return 1
-    except FileNotFoundError:
-        return 1
+    return sorted(resultado, key=lambda x: x['hora'])
+   
 
 @app.route('/')
 def index():
@@ -136,39 +52,33 @@ def index():
 
 @app.route('/verificar_cliente', methods=['GET', 'POST'])
 def verificar_cliente():
+
     if request.method == 'POST':
         cedula = request.form['cedula']
-        nombre = ''
-        telefono = ''
-        direccion = ''
-        encontrado = False
+        cliente = Cliente.query.filter_by(documento=cedula).first()
 
-        try:
-            with open(ARCHIVO_PEDIDOS, 'r', encoding='utf-8') as archivo:
-                for linea in archivo:
-                    partes = linea.strip().split(',')
-                    if len(partes) >= 8 and partes[3] == cedula:
-                        nombre = partes[2]
-                        telefono = partes[4]
-                        direccion = partes[6]
-                        encontrado = True
-                        break
-        except FileNotFoundError:
-            pass
-
-        if encontrado:
-            return redirect(url_for('registrar_pedido', cedula=cedula, nombre=nombre, telefono=telefono, direccion=direccion))
+        if cliente:
+            return redirect(url_for(
+                'registrar_pedido',
+                cedula=cliente.documento,
+                nombre=cliente.nombre,
+                telefono=cliente.telefono,
+                direccion=cliente.direccion
+            ))
         else:
-            return redirect(url_for('registrar_pedido', cedula=cedula))  # Solo autorellena cédula
-
+            return redirect(url_for('registrar_pedido', cedula=cedula))
+        
     return render_template('verificar_cliente.html')
 
 @app.route('/registrar_pedido')
 def registrar_pedido():
-    exito = request.args.get('exito')
+
+    productos = Producto.query.all()
+
     return render_template(
         'registrar_pedido.html',
-        exito=exito,
+        productos=productos,
+        exito=request.args.get('exito'),
         cedula=request.args.get('cedula', ''),
         nombre=request.args.get('nombre', ''),
         telefono=request.args.get('telefono', ''),
@@ -176,16 +86,29 @@ def registrar_pedido():
         cliente_existente=bool(request.args.get('nombre'))
     )
 
-
 @app.route('/reg_pedido', methods=['GET','POST'])
 def reg_pedido():
 
     productos = request.form.getlist('producto[]')
-    cantidades = request.form.getlist('cantidad[]')
-    sabores = request.form.getlist('sabor[]')
-    observaciones_list = request.form.getlist('observaciones[]')
+    print("Productos recibidos:", productos)
 
-    if not (len(productos) == len(cantidades) == len(sabores) == len(observaciones_list)):
+    
+    producto_info = []
+    for i, p in enumerate(productos):
+        partes = p.split('|')
+        if len(partes) != 4:
+            print(f"❌ Error en producto[{i}]: '{p}'")
+            return f"Error: el producto #{i+1} no tiene el formato esperado.", 400
+        producto_info.append(partes)
+
+
+    cantidades = request.form.getlist('cantidad[]')
+    
+    observaciones_list = request.form.getlist('observaciones[]')
+    
+
+
+    if not (len(productos) == len(cantidades) == len(observaciones_list)):
         return "Error: los campos de producto no coinciden en cantidad.", 400
     
     nombre = request.form['nombre']
@@ -194,31 +117,47 @@ def reg_pedido():
     forma_entrega = request.form['forma_entrega']
     direccion = request.form['direccion']
 
+    productos_list = []
+    for (nombre_prod, sabor, gramaje, precio_unitario), cant, obs in zip(producto_info, cantidades, observaciones_list):
+        producto = Producto.query.filter_by(nombre=nombre_prod, sabor=sabor, gramaje=gramaje).first()
+        productos_list.append({
+            'producto': nombre_prod if producto is None else producto.nombre,
+            'sabor': sabor,
+            'gramaje': gramaje,
+            'precio_unitario': precio_unitario,
+            'cantidad': int(cant),
+            'observaciones': obs.strip() or 'Sin observaciones'
+        })
+
     pedido = {
         'nombre': nombre,
         'documento': documento,
         'telefono': telefono,
         'forma_entrega': forma_entrega,
         'direccion': direccion,
-        'productos': [
-            {
-                'producto': prod,
-                'cantidad': int(cant),
-                'sabor': sabor,
-                'observaciones': obs,
-            } 
-            for prod, cant, sabor, obs in zip(productos, cantidades, sabores, observaciones_list)
-        ]
+        'productos': productos_list
     }
     
-    return render_template('confirmacion_pedido.html', pedido=pedido)
+    return render_template('confirmacion_pedido.html', pedido=pedido, productos=pedido['productos'])
 
 @app.route('/confirmar_pedido', methods=['POST'])
 def confirmar_pedido():
+
+    from models import Pedido, Cliente, Producto, DetallePedido
+
     productos = request.form.getlist('producto[]')
+    producto_info = []
+    for i, p in enumerate(productos):
+        partes = p.split('|')
+        if len(partes) != 4:
+            print(f"❌ Error en producto[{i}]: '{p}'")
+            return f"Error: el producto #{i+1} no tiene el formato esperado.", 400
+        producto_info.append(partes)
+
     cantidades = request.form.getlist('cantidad[]')
-    sabores = request.form.getlist('sabor[]')
+    
     observaciones_list = request.form.getlist('observaciones[]')
+
 
     nombre = request.form['nombre']
     documento = request.form['documento']
@@ -227,225 +166,297 @@ def confirmar_pedido():
     direccion = request.form['direccion']
 
     hora = datetime.now()
-    hora_for = hora.strftime('%Y-%m-%d %H:%M:%S')
+
+    cliente = Cliente.query.filter_by(documento=documento).first()
+    if not cliente:
+        cliente = Cliente(nombre=nombre, documento=documento, telefono=telefono, direccion=direccion, email='')
     
-    pedido_id = obtener_nuevo_id()
+        db.session.add(cliente)
+        db.session.commit()
 
-    detalles = "|".join(
-        f"{prod}-{cant}-{sabor}-{obs.strip() if obs.strip() else 'Sin observaciones'}"
-        for prod, cant, sabor, obs in zip(productos, cantidades, sabores, observaciones_list)
-
+    pedido=Pedido(
+        cliente_id=cliente.id,
+        forma_entrega=forma_entrega,
+        estado='registrado',
+        fecha_hora=hora
     )
+    db.session.add(pedido)
+    db.session.commit()
 
-    linea_pedido = f"{pedido_id},{detalles},{nombre},{documento},{telefono},{forma_entrega},{direccion},{hora_for}\n"
+    for (nombre, sabor, gramaje, _), cant, obs in zip(producto_info, cantidades, observaciones_list):
 
-    # Guardar en un archivo
-    try:
-        with open(ARCHIVO_PEDIDOS, 'a', encoding='utf-8') as f:
-            f.write(linea_pedido)
-        print("✅ Pedido guardado exitosamente.")
-    except Exception as e:
-        app.logger.error(f"❌ Error al guardar el pedido: {e}")
-        return render_template("error.html", mensaje="Ocurrió un problema al guardar tu pedido. Inténtalo de nuevo.")
+        producto = Producto.query.filter(
+            db.func.lower(Producto.nombre) == nombre.strip().lower(),
+            db.func.lower(Producto.sabor) == sabor.strip().lower(),
+            db.func.lower(Producto.gramaje) == gramaje.strip().lower(),
+        ).first()
+
+        if producto:
+            print(f"✅ Producto encontrado: {producto.nombre}, {producto.sabor}, {producto.gramaje}")
+            detalle = DetallePedido(
+                pedido_id=pedido.id,
+                producto_id=producto.id,
+                cantidad=int(cant),
+                observaciones=obs.strip() or 'Sin observaciones'
+            )
+            db.session.add(detalle)
+        else:
+            print(f"❌ Producto NO encontrado: {nombre}, {sabor}, {gramaje}")
         
+        
+        
+        
+    db.session.commit()
+    for d in pedido.detalles:
+        print(f"✅ Guardado: {d.producto.nombre}, {d.producto.sabor}, {d.producto.gramaje}, Cant: {d.cantidad}")
 
-    return redirect(url_for('pedido_exitoso', pedido_id=pedido_id))
+    return redirect(url_for('pedido_exitoso', pedido_id=pedido.id))
+
+
+
+@app.route('/detalle_pedido/<int:pedido_id>')
+def detalle_pedido_cliente(pedido_id):
+    pedido = db.session.get(Pedido, pedido_id)
+    if not pedido:
+        return "Pedido no encontrado", 404
+
+    cliente = pedido.cliente
+    productos = []
+    for detalle in pedido.detalles:
+        producto = detalle.producto
+        productos.append({
+            'producto': producto.nombre,
+            'sabor': producto.sabor,
+            'gramaje': producto.gramaje,
+            'cantidad': detalle.cantidad,
+            'observaciones': detalle.observaciones or 'Sin observaciones'
+        })
+
+    pedido_dict = {
+        'id': pedido.id,
+        'nombre': cliente.nombre,
+        'documento': cliente.documento,
+        'telefono': cliente.telefono,
+        'direccion': cliente.direccion,
+        'forma_entrega': pedido.forma_entrega,
+        'estado': pedido.estado,
+        'productos': productos,
+        'hora': pedido.fecha_hora
+    }
+
+    return render_template('detalle_pedido_cliente.html', pedido=pedido_dict, pedido_id=pedido_id)
+
 
 @app.route('/pedido_exitoso/<int:pedido_id>')
 def pedido_exitoso(pedido_id):
+    pedido = db.session.get(Pedido, pedido_id)
+    return render_template('pedido_exitoso.html', pedido_id=pedido.id)
     
-    return render_template('pedido_exitoso.html', pedido_id=pedido_id)
+    
+    
 
 @app.route('/pedidos')
 def pedidos():
-    pedidos = leer_pedidos()
+    pedidos = leer_pedidos()  # Esta función ya la tienes y arma los pedidos
     return render_template('lista_pedidos.html', pedidos=pedidos)
-
-@app.route('/detalle_pedido_cliente/<int:pedido_id>')
-def detalle_pedido_cliente(pedido_id):
-    pedidos = leer_pedidos()
-    pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
-    if pedido:
-        return render_template('detalle_pedido_cliente.html', pedido=pedido, pedido_id=pedido_id)
-    return "Pedido no encontrado", 404
-
 
 @app.route('/factura/<int:pedido_id>')
 def factura(pedido_id):
-    pedidos = leer_pedidos()
-    pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
-    if pedido:
-        precio_unitario = 5000
-        total = sum(p["cantidad"] * precio_unitario for p in pedido["productos"])
-        print("📦 Productos del pedido:", pedido["productos"])
+    from models import Pedido, DetallePedido, Producto
 
-        return render_template('factura.html', pedido=pedido, pedido_index=pedido_id,total=total, precio_unitario=precio_unitario)
-    return "Factura no encontrada", 404
+    pedido = db.session.get(Pedido, pedido_id)
+    detalles = DetallePedido.query.filter_by(pedido_id=pedido_id).all()
 
-ARCHIVO_CONTACTOS = 'contactos.txt'
+    productos = []
+    total = 0
+
+    for d in detalles:
+        producto = Producto.query.get(d.producto_id)
+        precio_unitario = producto.precio_unitario  # asegúrate de que exista
+        subtotal = precio_unitario * d.cantidad
+        total += subtotal
+        
+
+        productos.append({
+            'producto': producto.nombre,
+            'sabor': producto.sabor,
+            'gramaje': producto.gramaje,
+            'cantidad': d.cantidad,
+            'precio_unitario': precio_unitario,
+            'subtotal': subtotal,
+            'observaciones': d.observaciones
+        })
+
+    
+    return render_template('factura.html',
+                           pedido=pedido,
+                           productos=productos,
+                           total=total)
+
+   
 
 @app.route('/contactanos', methods=['GET', 'POST'])
 def contactanos():
+
     if request.method == 'POST':
         nombre = request.form['nombre']
         documento = request.form['documento']
         correo = request.form['correo']
         telefono = request.form['telefono']
         direccion = request.form['direccion']
-        hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        mensaje = request.form['mensaje']
 
-        with open(ARCHIVO_CONTACTOS, 'a', encoding='utf-8') as f:
-            f.write(f"{nombre},{documento},{correo},{telefono},{direccion},{hora}\n")
+        nuevo_contacto = Contacto(
+            nombre=nombre,
+            documento=documento,
+            correo=correo,
+            telefono=telefono,
+            direccion=direccion,
+            mensaje=mensaje
+        )
+        db.session.add(nuevo_contacto)
+        db.session.commit()
 
         return render_template('contactanos.html', mensaje="¡Gracias por contactarnos! 😊")
 
     return render_template('contactanos.html')
 
+      
 @app.route('/modificar_pedido/<int:pedido_id>', methods=['GET'])
 def modificar_pedido(pedido_id):
-    pedidos_lista = leer_pedidos()
-    pedido = next((p for p in pedidos_lista if p["id"] == pedido_id), None)
-    if pedido:
-        return render_template('modificar_pedido.html', pedido=pedido, pedido_id=pedido_id)
-    else:
+
+    pedido = db.session.get(Pedido, pedido_id)
+    if not pedido:
         return "Pedido no encontrado", 404
     
-@app.route('/editar_producto/<int:pedido_id>/<int:producto_index>', methods=['GET'])
-def editar_producto(pedido_id, producto_index):
-    pedidos = leer_pedidos()
-    pedido = next((p for p in pedidos if p["id"] == pedido_id), None)
-    
-    if not pedido or producto_index >= len(pedido["productos"]):
-        return "Producto o pedido no encontrado", 404
-    
-    producto = pedido["productos"][producto_index]
-    return render_template("editar_producto.html", pedido=pedido, producto=producto, producto_index=producto_index)
+    cliente = pedido.cliente
+    productos = []
+    for detalle in pedido.detalles:
+        producto = detalle.producto
+        productos.append({
+            'producto': producto.nombre,
+            'sabor': producto.sabor,
+            'cantidad': detalle.cantidad,
+            'observaciones': detalle.observaciones or 'Sin observaciones'
+        })
+
+    pedido_dict = {
+        'id': pedido.id,
+        'nombre': cliente.nombre,
+        'documento': cliente.documento,
+        'telefono': cliente.telefono,
+        'direccion': cliente.direccion,
+        'forma_entrega': pedido.forma_entrega,
+        'estado': pedido.estado,
+        'productos': productos,
+        'hora': pedido.fecha_hora
+    }
+    return render_template('modificar_pedido.html', pedido=pedido_dict, pedido_id=pedido_id)
+
 
 
 @app.route('/actualizar_pedido/<int:pedido_id>', methods=['POST'])
 def actualizar_pedido(pedido_id):
-    pedidos_lista = leer_pedidos()
-    pedido = next((p for p in pedidos_lista if p["id"] == pedido_id), None)
+
+    pedido = db.session.get(Pedido, pedido_id)
     if not pedido:
         return "Pedido no encontrado", 404
-
     
+    cliente = pedido.cliente
+    cliente.nombre = request.form['nombre']
+    cliente.documento = request.form['documento']
+    cliente.telefono = request.form['telefono']
+    cliente.direccion = request.form['direccion']
+
+    pedido.forma_entrega = request.form['forma_entrega']
+    pedido.estado = request.form['estado']
+
+    for detalle in pedido.detalles:
+        db.session.delete(detalle)
+
     productos = request.form.getlist('producto[]')
     sabores = request.form.getlist('sabor[]')
     cantidades = request.form.getlist('cantidad[]')
     observaciones = request.form.getlist('observaciones[]')
 
-    # actualizar datos del pedido
-    nuevos_productos = []
-    for p, s, c, o in zip(productos, sabores, cantidades, observaciones):
-        nuevos_productos.append({
-            "producto": p,
-            "sabor": s,
-            "cantidad": int(c),
-            "observaciones": o
-        })
+    for prod, sabor, cant, obs in zip(productos, sabores, cantidades, observaciones):
+        producto = Producto.query.filter_by(nombre=prod, sabor=sabor).first()
+        if producto:
+            nuevo_detalle = DetallePedido(
+                pedido_id=pedido.id,
+                producto_id=producto.id,
+                cantidad=int(cant),
+                observaciones=obs.strip() or None
+            )
+            db.session.add(nuevo_detalle)
 
-    pedido['productos'] = nuevos_productos
-    pedido['nombre'] = request.form['nombre']
-    pedido['documento'] = request.form['documento']
-    pedido['telefono'] = request.form['telefono']
-    pedido['direccion'] = request.form['direccion']
-    pedido['forma_entrega'] = request.form['forma_entrega']
-    pedido['estado'] = request.form['estado']
-
-    #ahora sobrescribe el archivo
-    try:
-        with open(ARCHIVO_PEDIDOS, 'w', encoding='utf-8') as f:
-            for p in pedidos_lista:
-                detalles = "|".join(
-                    f"{prod['producto']}-{prod['cantidad']}-{prod['sabor']}-{prod['observaciones']}"
-                    for prod in p["productos"]
-                )
-
-                estado = p.get('estado', 'Registrado').strip()
-
-                linea = f"{p['id']},{detalles},{p['nombre']},{p['documento']},{p['telefono']},{p['forma_entrega']},{p['direccion']},{p['hora'].strftime('%Y-%m-%d %H:%M:%S')},{estado}\n"
-                
-                f.write(linea)
-    except Exception as e:
-        return f"Error al guardar el pedido: {e}", 500
-
+    db.session.commit()
     return redirect(url_for('detalle_pedido_cliente', pedido_id=pedido_id))
 
-@app.route('/estado_pedido')
-def estado_pedido():
-    return render_template('estado_pedido.html')
+
+@app.route('/rastreo')
+def rastreo():
+    return render_template('rastreo.html')
 
 
 @app.route('/ver_estado_pedido', methods=['POST'])
 def ver_estado_pedido():
+
     try:
         numero = int(request.form['numero'])
-        pedidos = leer_pedidos()
+        pedido = db.session.get(Pedido, numero)
 
-        pedido = next((p for p in pedidos if p['id'] == numero), None)
+
+        
         if pedido:
-            estado = pedido.get('estado', 'Registrado')
+            estado = pedido.estado or 'registrado'
             mensaje = f"📦 El estado actual del pedido #{numero:04d} es: {estado.upper()}"
             clase_color = 'verde'
         else:
             mensaje = "❌ No se encontró el pedido. Verifica el número ingresado."
             clase_color = 'rojo'
+            pedido = None
 
-    except:
+    except ValueError:
         mensaje = "⚠️ Número inválido. Intenta nuevamente."
         clase_color = 'rojo'
+        pedido = None
 
-    return render_template('estado_pedido.html', mensaje=mensaje, clase_color=clase_color, pedido=pedido)
+    return render_template('rastreo.html', mensaje=mensaje, clase_color=clase_color, pedido=pedido)
+
+
 
 @app.route('/cancelar_pedido/<int:pedido_id>', methods=['POST'])
 def cancelar_pedido(pedido_id):
-    pedidos = leer_pedidos()
-    pedido = next((p for p in pedidos if p['id'] == pedido_id), None)
 
+    pedido = db.session.get(Pedido, pedido_id)
     if not pedido:
         return "Pedido no encontrado", 404
-
-    estado_actual = pedido.get("estado", "Registrado").lower()
+    
+    estado_actual = pedido.estado.lower()
 
     mensajes_estado = {
         'registrado': "✅ El pedido ha sido cancelado exitosamente. Gracias por avisarnos.",
-        
         'preparacion': "⚠️ No se puede cancelar el pedido porque ya está en preparación. Por favor, <a href='/contactanos'><strong>contacta a nuestro servicio al cliente</strong></a> si necesitas más ayuda.",
-        
         'listo': "⚠️ Tu pedido ya está listo para ser entregado o recogido. En esta etapa no es posible cancelarlo. <a href='/contactanos'><strong>Contacta al servicio al cliente</strong></a> para mayor asistencia.",
-        
-        'en camino': "📦 El pedido ya está en camino y no puede ser cancelado. Puedes rechazarlo en el momento de entrega o <a href='/contactanos'><strong>escribirnos aquí</strong></a> para más opciones.",
-        
+        'en camino': "📦 El pedido ya está en camino y no puede ser cancelado. Puedes rechazarlo en la entrega  o <a href='/contactanos'><strong>escribirnos aquí</strong></a>.",
         'entregado': "🚚 El pedido ya fue entregado. Si tienes inconvenientes, por favor <a href='/contactanos'><strong>contacta a nuestro equipo de soporte</strong></a>.",
-        
         'cancelado': "ℹ️ Este pedido ya fue cancelado anteriormente. Si fue un error, por favor <a href='/contactanos'><strong>crea uno nuevo o contáctanos</strong></a>.",
     }
 
     if estado_actual != "registrado":
         mensaje = mensajes_estado.get(estado_actual, "⚠️ No se puede cancelar el pedido debido a un estado desconocido. <a href='/contactanos'><strong>Contáctanos</strong></a> para revisar el caso.")
-        return render_template("estado_pedido.html", mensaje=mensaje, clase_color="rojo", pedido=pedido, pedido_id=pedido_id)
-
-
-    # Cambiar el estado a cancelado
-    pedido["estado"] = "cancelado"
-
-    # Guardar los cambios
+        return render_template("rastreo.html", mensaje=mensaje, clase_color="rojo", pedido=pedido, pedido_id=pedido_id)
+    
+    pedido.estado = "cancelado"
     try:
-        with open(ARCHIVO_PEDIDOS, 'w', encoding='utf-8') as f:
-            for p in pedidos:
-                detalles = "|".join(
-                    f"{prod['producto']}-{prod['cantidad']}-{prod['sabor']}-{prod['observaciones']}"
-                    for prod in p["productos"]
-                )
-                estado = p.get('estado', 'Registrado').strip()
-                linea = f"{p['id']},{detalles},{p['nombre']},{p['documento']},{p['telefono']},{p['forma_entrega']},{p['direccion']},{p['hora'].strftime('%Y-%m-%d %H:%M:%S')},{estado}\n"
-                f.write(linea)
+        db.session.commit()
         mensaje = mensajes_estado['registrado']
-        return render_template("estado_pedido.html", mensaje=mensaje, clase_color="verde", pedido=pedido, pedido_id=pedido_id)
+        return render_template("rastreo.html", mensaje=mensaje, clase_color="verde", pedido=pedido)
     except Exception as e:
         return f"Error al cancelar el pedido: {e}", 500
 
+  
 if __name__ == '__main__':
     # Configuración para Render
     #port = int(os.environ.get('PORT', 5000))  

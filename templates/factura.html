@@ -12,50 +12,52 @@
 <div class="factura">
     <h2>Factura del Pedido</h2>
     <p><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</p>
-    <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
-    <p><strong>Documento:</strong> {{ pedido.documento }}</p>
-    <p><strong>Teléfono:</strong> {{ pedido.telefono }}</p>
-    <p><strong>Dirección:</strong> {{ pedido.direccion }}</p>
+    <p><strong>Nombre:</strong> {{ pedido.cliente.nombre }}</p>
+    <p><strong>Documento:</strong> {{ pedido.cliente.documento }}</p>
+    <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+    <p><strong>Dirección:</strong> {{ pedido.cliente.direccion }}</p>
     <p><strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}</p>
-    <p><strong>Fecha y hora:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p><strong>Fecha y hora:</strong> {{ pedido.fecha_hora.strftime('%H:%M:%S') if pedido.fecha_hora else 'No disponible' }}
+</p>
 
     <table>
-        <tr>
-            <th>Producto</th>
-            <th>Sabor</th>
-            <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Total</th>
-        </tr>
-       
-        {% for p in pedido.productos %}
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Sabor</th>
+                <th>Gramaje</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for p in productos %}
             
-        <tr>
-            <td>{{ p.producto }}</td>
-            <td>{{ p.sabor }}</td>
-            <td>{{ p.cantidad }}</td>
-            <td>${{ precio_unitario }}</td>
-            <td>${{ p.cantidad * precio_unitario  }}</td>
-        </tr>
-        <tr>
-            <td colspan="5"><em>📝 Observaciones: {{ p.observaciones }}</em></td>
-        </tr>
+                <tr>
+                    <td>{{ p.producto }}</td>
+                    <td>{{ p.sabor }}</td>
+                    <td>{{ p.gramaje }}</td>
+                    <td>{{ p.cantidad }}</td>
+                    <td>${{ "{:,.0f}".format(p.precio_unitario).replace(",", ".") }}</td>
+                    <td>${{ "{:,.0f}".format(p.subtotal).replace(",", ".") }}</td>
+                </tr>
+                
+                {% if p.observaciones %}
+                    <tr>
+                        <td colspan="6"><em>📝 Observaciones: {{ p.observaciones }}</em></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
 
-        {% endfor %}
+        </tbody>
+        
 
     </table>
 
-    <p class="total">Total a pagar: ${{ total }}</p>
-<!--  
-    <hr>
-    <p style="text-align: center;">Puedes consultar tu pedido más tarde en:</p>
-    <p style="text-align: center;">
-    
-        <a href="{{ url_for('detalle_pedido_cliente', pedido_id=pedido_index) }}" target="_blank">
-        Ver detalle del pedido
-        </a>
-    </p>
--->  
+    <p class="total">Total a pagar: ${{ "{:,.0f}".format(total).replace(",", ".") }}</p>
+
 </div>
 
 <!-- Botones -->
