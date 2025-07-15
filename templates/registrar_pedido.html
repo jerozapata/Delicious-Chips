@@ -33,7 +33,7 @@
     <h2>Nuevo pedido</h2>
     <p class="subtexto">Por favor, ingrese los detalles de su pedido</p>
 
-    <form id="pedidoForm" method="POST" action="/reg_pedido">
+    <form id="pedidoForm" method="POST" action="/reg_pedido" onsubmit="return validarFormulario()">
       
       <h3>Productos del pedido</h3>
       <div id="productos-container" class="grid-productos">
@@ -191,6 +191,40 @@
       // Limpiar el storage
       localStorage.removeItem('pedidoGuardado');
     });
+    function validarFormulario() {
+  const productos = document.querySelectorAll('select[name="producto[]"]');
+  const cantidades = document.querySelectorAll('input[name="cantidad[]"]');
+  const sabores = document.querySelectorAll('select[name="sabor[]"]');
+  const formaEntrega = document.querySelector('input[name="forma_entrega"]:checked');
+
+  for (let i = 0; i < productos.length; i++) {
+    if (productos[i].value === "") {
+      alert("⚠️ Debes seleccionar un producto.");
+      productos[i].focus();
+      return false;
+    }
+
+    if (cantidades[i].value === "" || parseInt(cantidades[i].value) <= 0) {
+      alert("⚠️ La cantidad debe ser un número mayor a cero.");
+      cantidades[i].focus();
+      return false;
+    }
+
+    if (sabores[i].value === "") {
+      alert("⚠️ Debes seleccionar un sabor.");
+      sabores[i].focus();
+      return false;
+    }
+  }
+
+  if (!formaEntrega) {
+    alert("⚠️ Debes seleccionar una forma de entrega.");
+    return false;
+  }
+
+  return true; // Si todo está bien, se envía el formulario
+}
+
   </script>
 
 </body>

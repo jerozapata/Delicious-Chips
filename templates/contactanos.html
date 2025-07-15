@@ -4,197 +4,68 @@
   <meta charset="UTF-8" />
   <title>Contáctanos | Delicious Chips</title>
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
 
-  <style>
-    body {
-  font-family: Arial, sans-serif;
-  background-color: #e6f0ff; /* azul crema suave */
-  color: #2d2d2d;
-  padding: 20px;
-  margin: 0;
-}
 
-.container {
-  max-width: 700px;
-  margin: auto;
-  background-color: #fefefe; /* fondo blanco suave */
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-}
-
-h1 {
-  text-align: center;
-  color: #0059b3; /* azul profundo */
-  margin-bottom: 10px;
-}
-
-h2 {
-  color: #0073e6;
-  margin-top: 40px;
-  border-bottom: 2px solid #cce0ff;
-  padding-bottom: 5px;
-}
-
-.info, .formulario {
-  margin: 20px 0;
-  font-size: 18px;
-}
-
-.info strong {
-  display: inline-block;
-  width: 140px;
-}
-
-.redes a {
-  display: inline-flex;
-  align-items: center;
-  margin: 8px 0;
-  color: #004080;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.redes img {
-  width: 22px;
-  height: 22px;
-  margin-right: 10px;
-}
-
-.redes a:hover {
-  text-decoration: underline;
-  color: #0066cc;
-}
-
-form {
-  margin-top: 30px;
-}
-
-label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-  color: #003366;
-}
-
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  border: 1px solid #b3d1ff;
-  border-radius: 6px;
-  background-color: #f8fbff;
-  transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus {
-  border-color: #66aaff;
-  outline: none;
-}
-
-.botones {
-  margin-top: 40px;
-  text-align: center;
-}
-
-.btn-volver {
-  background-color: #a3d2ff;
-  color: #003366;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-volver:hover {
-  background-color: #82c4ff;
-}
-
-.btn-enviar {
-  background-color: #0073e6;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.btn-enviar:hover {
-  background-color: #005bb5;
-}
-.volver {
-  display: block;
-  text-align: center;
-  margin-top: 40px;
-  color: #004080;
-  font-weight: bold;
-  text-decoration: none;
-  transition: color 0.2s;
-  }
-
-.volver:hover {
-  color: #007bff;
-  text-decoration: underline;
-}
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Contáctanos</h1>
+  <div class="pagina-contacto">
+    
+    <div class="container">
+      <h1>Contáctanos</h1>
 
-    {% if mensaje %}
-      <p style="color: green; font-weight: bold;">{{ mensaje }}</p>
-    {% endif %}
+      {% if mensaje %}
+        <p style="color: green; font-weight: bold;">{{ mensaje }}</p>
+      {% endif %}
 
-    <div class="info"><strong>Teléfono:</strong> 3159284022</div>
-    <div class="info"><strong>Correo:</strong> deliciouschips@yahoo.com.co</div>
-    <div class="info"><strong>Dirección:</strong> Calle 75 #64A-31</div>
+      <div class="info"><strong>Teléfono:</strong> 3159284022</div>
+      <div class="info"><strong>Correo:</strong> deliciouschips@yahoo.com.co</div>
+      <div class="info"><strong>Dirección:</strong> Calle 75 #64A-31</div>
 
-    <div class="info redes">
-      <strong>Redes Sociales:</strong><br>
-      <a href="https://www.instagram.com/delicious.chips/" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">Instagram
-      </a>
-      <a href="https://m.facebook.com/962984017123730/" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">Facebook
-      </a>
+      <div class="info redes">
+        <strong>Redes Sociales:</strong><br>
+        <a href="https://www.instagram.com/delicious.chips/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">Instagram
+        </a>
+        <a href="https://m.facebook.com/962984017123730/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">Facebook
+        </a>
+      </div>
+
+      <div class="formulario">
+        <h2>Déjanos tus datos</h2>
+        <form method="post">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+
+          <label for="documento">Documento:</label>
+          <input type="text" id="documento" name="documento" required>
+
+          <label for="correo">Correo:</label>
+          <input type="email" id="correo" name="correo" required>
+
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono" required>
+
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" name="direccion" required>
+
+          <div class="botones">
+            <button type="submit" class="btn-enviar">Enviar</button>
+          </div>
+        </form>
+      </div>
+      <div class="volver">
+        <a class="btn-volver" href="{{ url_for('index') }}">Volver</a>
+      </div>
+        
     </div>
-
-    <div class="formulario">
-      <h2>Déjanos tus datos</h2>
-      <form method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-
-        <label for="documento">Documento:</label>
-        <input type="text" id="documento" name="documento" required>
-
-        <label for="correo">Correo:</label>
-        <input type="email" id="correo" name="correo" required>
-
-        <label for="telefono">Teléfono:</label>
-        <input type="text" id="telefono" name="telefono" required>
-
-        <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion" required>
-
-        <div class="botones">
-          <button type="submit" class="btn-enviar">Enviar</button>
-        </div>
-      </form>
-    </div>
-    <div class="volver">
-      <a class="btn-volver" href="{{ url_for('index') }}">Volver</a>
-    </div>
-      
   </div>
+  
+  <footer>
+      <p>&copy; 2025 Delicious Chips. Todos los derechos reservados.</p>
+  </footer>
+
 </body>
 </html>
 

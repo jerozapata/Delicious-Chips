@@ -3,96 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Detalle del Pedido</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fdfdfd;
-      padding: 2rem;
-    }
-
-    .detalle {
-      max-width: 600px;
-      margin: auto;
-      background-color: #fffbea;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-
-    .campo {
-      margin-bottom: 1rem;
-    }
-
-    .campo strong {
-      display: inline-block;
-      width: 150px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .volver {
-      display: block;
-      margin: 2rem auto 0;
-      text-align: center;
-      background-color: #f77f00;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      width: fit-content;
-    }
-
-    .volver:hover {
-      background-color: #d62828;
-    }
-  </style>
+ 
 </head>
 <body>
 
-  <div class="detalle">
-    <h1>🧾 Detalle de tu Pedido</h1>
+  <div class="pagina-detalle">
 
-    <div class="campo"><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</div>
-    
-    <div class="campo">
-        <strong>Estado:</strong>
-        <span class="estado-label estado-{{ pedido.estado | default('Registrado') | replace(' ', '\\ ') }}">
-          {{ pedido.estado | default('Registrado') | title }}
-        </span>
+    <div class="detalle">
+      <h1>🧾 Detalle de tu Pedido</h1>
+
+      <div class="campo"><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}</div>
+      
+      <div class="campo">
+          <strong>Estado:</strong>
+          <span class="estado-label estado-{{ pedido.estado | default('Registrado') | replace(' ', '\\ ') }}">
+            {{ pedido.estado | default('Registrado') | title }}
+          </span>
+      </div>
+
+      <div class="seccion-doble">
+
+        <div class="info-cliente">
+          <h3>Información del Cliente</h3>
+
+          <div class="campo"><strong>Nombre:</strong> {{ pedido.nombre }}</div>
+          <div class="campo"><strong>Documento:</strong> {{ pedido.documento }}</div>
+          <div class="campo"><strong>Teléfono:</strong> {{ pedido.telefono }}</div>
+          <div class="campo"><strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}</div>
+          <div class="campo"><strong>Dirección:</strong> {{ pedido.direccion }}</div>
+          <div class="campo"><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+        </div>
+
+
+        <div class="productos">
+          <h3>Productos</h3>
+          <ul>
+            {% for p in pedido.productos %}
+              <li>
+                <strong>{{ p.cantidad }} x {{ p.producto }}</strong> ({{ p.sabor }})<br>
+                <em>{{ p.observaciones or 'Sin observaciones' }}</em>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div> 
+
+      <div class="botones-acciones">
+        <a href="{{ url_for('modificar_pedido', pedido_id=pedido_id) }}" class="btn btn-modificar">
+          Modificar Pedido
+        </a>
+        <a class="btn btn-volver" href="{{ url_for('pedidos')}}">← Volver a la lista de pedidos</a>
+
+      </div>
     </div>
-
-    <div class="campo">
-      <strong>Productos:</strong>
-      <ul>
-        {% for p in pedido.productos %}
-          <li>{{ p.cantidad }} x {{ p.producto }} ({{ p.sabor }}) - {{ p.observaciones or 'Sin observaciones' }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <div class="campo"><strong>Nombre:</strong> {{ pedido.nombre }}</div>
-    <div class="campo"><strong>Documento:</strong> {{ pedido.documento }}</div>
-    <div class="campo"><strong>Teléfono:</strong> {{ pedido.telefono }}</div>
-    <div class="campo"><strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}</div>
-    <div class="campo"><strong>Dirección:</strong> {{ pedido.direccion }}</div>
-    <div class="campo"><strong>Hora del pedido:</strong> {{ pedido.hora.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-
-    
-    <a href="{{ url_for('modificar_pedido', pedido_id=pedido_id) }}">
-      <button>Modificar Pedido</button>
-    </a>
-    <a class="volver" href="{{ url_for('pedidos')}}">← Volver a la lista de pedidos</a>
   </div>
+  <footer>
+      <p>&copy; 2025 Delicious Chips. Todos los derechos reservados.</p>
+  </footer>
 
 </body>
 </html>

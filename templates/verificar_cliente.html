@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Verificar cliente</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
 </head>
 <body>
 
-  <h1>¿Ya has pedido antes? 🪪</h1>
+  <div class="confirmar-pedido">
+    <h1>¿Ya has pedido antes? 🪪</h1>
 
-  <form action="/verificar_cliente" method="POST">
-    <label for="cedula">Ingresa tu cédula para cargar tus datos automáticamente:</label>
-    <input type="number" name="cedula" id="cedula" required>
-    <button type="submit">Continuar</button>
-  </form>
+    <form action="/verificar_cliente" method="POST">
+      <label for="cedula">Ingresa tu cédula para cargar tus datos automáticamente:</label>
+      <input type="number" name="cedula" id="cedula" required>
+      <button type="submit">Continuar</button>
+    </form>
+
+  </div>
+  
 
 </body>
 </html>

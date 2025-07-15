@@ -4,24 +4,9 @@
     <meta charset="UTF-8">
     <title>Factura</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
 
-    <style>
-        body { font-family: Arial; background: #f0f0f0; padding: 40px; }
-        .factura {
-            background: #fff; padding: 30px; border-radius: 10px;
-            max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 { text-align: center; color: #333; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { padding: 12px; border: 1px solid #ccc; }
-        .total { text-align: right; font-weight: bold; }
 
-        @media print {
-            button, a {
-                display: none;
-            }
-        }
-    </style>
 </head>
 <body>
 <div class="factura">
@@ -74,15 +59,16 @@
 </div>
 
 <!-- Botones -->
-<div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px;">
-    <button onclick="window.print()" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px;">
-        Descargar como PDF
-    </button>
-    <a href="{{ url_for('index') }}">
-        <button style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px;">
-            Volver al Inicio
-        </button>
-    </a>
+<div class="factura-botones">
+  <button onclick="window.print()">Descargar como PDF</button>
+  <a href="{{ url_for('index') }}">
+    <button>Volver al Inicio</button>
+  </a>
 </div>
+
+<footer>
+    <p>&copy; 2025 Delicious Chips. Todos los derechos reservados.</p>
+</footer>
+
 </body>
 </html>
