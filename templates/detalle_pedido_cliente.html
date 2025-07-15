@@ -49,14 +49,18 @@
             {% endfor %}
           </ul>
         </div>
-      </div> 
+      </div>
 
       <div class="botones-acciones">
         <a href="{{ url_for('modificar_pedido', pedido_id=pedido_id) }}" class="btn btn-modificar">
-          Modificar Pedido
+        Modificar Pedido
         </a>
-        <a class="btn btn-volver" href="{{ url_for('pedidos')}}">← Volver a la lista de pedidos</a>
 
+        <a href="{{ url_for('factura', pedido_id=pedido_id) }}" class="btn btn-factura">
+        Ver Factura
+        </a>
+
+        <a class="btn btn-volver" href="{{ url_for('pedidos') }}">← Volver a la lista de pedidos</a>
       </div>
     </div>
   </div>
