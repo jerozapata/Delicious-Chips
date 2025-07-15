@@ -458,12 +458,14 @@ def cancelar_pedido(pedido_id):
         return render_template("rastreo.html", mensaje=mensaje, clase_color="verde", pedido=pedido)
     except Exception as e:
         return f"Error al cancelar el pedido: {e}", 500
-
   
 if __name__ == '__main__':
     # Configuración para Render
     port = int(os.environ.get('PORT', 5000))  
     app.run(debug=True, host='0.0.0.0', port=port)
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
 
     # Para desarrollo local, puedes usar:
     #app.run(debug=True, port=5000)  
