@@ -5,3 +5,6 @@
 5,Papas-2-Pimienta-No hay observacion,Sebastián Ríos,6677889900,3012345678,Domicilio,Cra 85 #20-40,2025-06-25 10:12:00,registrado
 6,Papas-5-Limon-Mucho limón|Platanitos-4-Limon-Sin mucho limón|Platanitos-5-Pimienta-Y limón,Susana López,1123069382,3117367311,Domicilio,Calle 24 Sur # 33-22 Poblado Torre Barcelona apto 2311,2025-07-11 00:12:03,listo
 7,Papas-1-Limon-sin sal|Platanitos-2-Pimienta-y limon,Jeronimo,1029435462,3124535654,Domicilio,Calle 30 # 23 -23,2025-07-11 15:46:09,cancelado
+8,Papas-2-Pimienta-Sin observaciones,Nicols,1076738964,3145410108,Domicilio,Carre 59a#95-10,2025-07-15 12:38:44,registrado
+9,Papas-2-Pimienta-Sin observaciones,Nicols,1076738964,3145410108,Domicilio,Carre 59a#95-10,2025-07-15 12:40:22,cancelado
+10,Platanitos-6-Pimienta-Sin observaciones,Nicols,1076738964,3145410108,Domicilio,Carre 59a#95-10,2025-07-15 13:38:18
