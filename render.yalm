@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: delicious-chips
+    env: python
+    buildCommand: ""
+    startCommand: bash -c "python cargar_esquema.py && python cargar_clientes.py && python cargar_productos.py && python cargar_pedidos.py && gunicorn app:app"
+
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SQLALCHEMY_DATABASE_URI
+        value: sqlite:///instance/base_datos_delicious.db
