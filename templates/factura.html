@@ -15,6 +15,7 @@
     <p><strong>Nombre:</strong> {{ pedido.cliente.nombre }}</p>
     <p><strong>Documento:</strong> {{ pedido.cliente.documento }}</p>
     <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+    <p><strong>Correo electrónico:</strong> {{ pedido.cliente.email }}</p>
     <p><strong>Dirección:</strong> {{ pedido.cliente.direccion }}</p>
     <p><strong>Forma de entrega:</strong> {{ pedido.forma_entrega }}</p>
     <p><strong>Fecha y hora:</strong> {{ pedido.fecha_hora.strftime('%H:%M:%S') if pedido.fecha_hora else 'No disponible' }}

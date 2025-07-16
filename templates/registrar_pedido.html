@@ -97,7 +97,10 @@
       <input type="number" name="documento" id="documento" value="{{ cedula }}" {% if cliente_existente %}readonly{% endif %} >
 
       <label for="telefono">Teléfono:</label>
-      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %}  >
+      <input type="number" name="telefono" id="telefono" value="{{ telefono }}" {% if cliente_existente %}readonly{% endif %} >
+      
+      <label for="email">Correo electrónico:</label>
+      <input type="email" name="email" id="email" value="{{ email }}" {% if cliente_existente %}readonly{% endif %} >
 
       <label>Forma de entrega:</label><br>
       <label><input type="radio" name="forma_entrega" value="Domicilio" required> Domicilio</label>

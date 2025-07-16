@@ -40,6 +40,7 @@ def leer_pedidos():
             'nombre': cliente.nombre,
             'documento': cliente.documento,
             'telefono': cliente.telefono,
+            'email': cliente.email,
             'direccion': cliente.direccion,
             'forma_entrega': pedido.forma_entrega,
             'hora': pedido.fecha_hora,
@@ -67,6 +68,7 @@ def verificar_cliente():
                 cedula=cliente.documento,
                 nombre=cliente.nombre,
                 telefono=cliente.telefono,
+                email = cliente.email,
                 direccion=cliente.direccion
             ))
         else:
@@ -86,6 +88,7 @@ def registrar_pedido():
         cedula=request.args.get('cedula', ''),
         nombre=request.args.get('nombre', ''),
         telefono=request.args.get('telefono', ''),
+        email = request.args.get('email', ''),
         direccion=request.args.get('direccion', ''),
         cliente_existente=bool(request.args.get('nombre'))
     )
@@ -118,6 +121,7 @@ def reg_pedido():
     nombre = request.form['nombre']
     documento = request.form['documento']
     telefono = request.form['telefono']
+    email = request.form['email']
     forma_entrega = request.form['forma_entrega']
     direccion = request.form['direccion']
 
@@ -137,6 +141,7 @@ def reg_pedido():
         'nombre': nombre,
         'documento': documento,
         'telefono': telefono,
+        'email': email,
         'forma_entrega': forma_entrega,
         'direccion': direccion,
         'productos': productos_list
@@ -166,6 +171,7 @@ def confirmar_pedido():
     nombre = request.form['nombre']
     documento = request.form['documento']
     telefono = request.form['telefono']
+    email = request.form['email']
     forma_entrega = request.form['forma_entrega']
     direccion = request.form['direccion']
 
@@ -173,7 +179,7 @@ def confirmar_pedido():
 
     cliente = Cliente.query.filter_by(documento=documento).first()
     if not cliente:
-        cliente = Cliente(nombre=nombre, documento=documento, telefono=telefono, direccion=direccion, email='')
+        cliente = Cliente(nombre=nombre, documento=documento, telefono=telefono, direccion=direccion, email=email)
     
         db.session.add(cliente)
         db.session.commit()
@@ -241,6 +247,7 @@ def detalle_pedido_cliente(pedido_id):
         'nombre': cliente.nombre,
         'documento': cliente.documento,
         'telefono': cliente.telefono,
+        'email': cliente.email,
         'direccion': cliente.direccion,
         'forma_entrega': pedido.forma_entrega,
         'estado': pedido.estado,
@@ -305,7 +312,7 @@ def contactanos():
     if request.method == 'POST':
         nombre = request.form['nombre']
         documento = request.form['documento']
-        correo = request.form['correo']
+        email = request.form['email']
         telefono = request.form['telefono']
         direccion = request.form['direccion']
         mensaje = request.form['mensaje']
@@ -313,7 +320,7 @@ def contactanos():
         nuevo_contacto = Contacto(
             nombre=nombre,
             documento=documento,
-            correo=correo,
+            email=email,
             telefono=telefono,
             direccion=direccion,
             mensaje=mensaje
@@ -349,6 +356,7 @@ def modificar_pedido(pedido_id):
         'nombre': cliente.nombre,
         'documento': cliente.documento,
         'telefono': cliente.telefono,
+        'email': cliente.email,
         'direccion': cliente.direccion,
         'forma_entrega': pedido.forma_entrega,
         'estado': pedido.estado,
@@ -370,6 +378,7 @@ def actualizar_pedido(pedido_id):
     cliente.nombre = request.form['nombre']
     cliente.documento = request.form['documento']
     cliente.telefono = request.form['telefono']
+    cliente.email = request.form['email']
     cliente.direccion = request.form['direccion']
 
     pedido.forma_entrega = request.form['forma_entrega']

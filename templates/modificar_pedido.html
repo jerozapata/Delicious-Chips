@@ -43,6 +43,9 @@
                 
                 <label>Teléfono:</label>
                 <input type="number" name="telefono" value="{{ pedido.get('telefono', '') }}"><br><br>
+
+                <label>Correo electrónico:</label>
+                <input type="email" name="email" value="{{  pedido.get('email', '') }}">
                 
                 <label>Dirección:</label>
                 <input type="text" name="direccion" value="{{ pedido.get('direccion', '') }}"><br><br>

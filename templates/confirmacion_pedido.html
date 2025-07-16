@@ -16,6 +16,7 @@
                     <li><strong>Nombre:</strong> {{ pedido.nombre }}</li>
                     <li><strong>Documento:</strong> {{ pedido.documento }}</li>
                     <li><strong>Teléfono:</strong> {{ pedido.telefono }}</li>
+                    <li><strong>Correo electrónico:</strong> {{ pedido.email }}</li>
                     <li><strong>Entrega:</strong> {{ pedido.forma_entrega }}</li>
                     <li><strong>Dirección:</strong> {{ pedido.direccion }}</li>
                 </ul>
@@ -48,6 +49,7 @@
                 <input type="hidden" name="nombre" value="{{ pedido.nombre }}">
                 <input type="hidden" name="documento" value="{{ pedido.documento }}">
                 <input type="hidden" name="telefono" value="{{ pedido.telefono }}">
+                <input type="hidden" name="email" value=" {{ pedido.email }}">
                 <input type="hidden" name="forma_entrega" value="{{ pedido.forma_entrega }}">
                 <input type="hidden" name="direccion" value="{{ pedido.direccion }}">
                 <input type="hidden" name="estado" value="{{ pedido.estado | default('Registrado') }}">
@@ -70,6 +72,7 @@
                 nombre: "{{ pedido.nombre }}",
                 documento: "{{ pedido.documento }}",
                 telefono: "{{ pedido.telefono }}",
+                email: "{{ pedido.email }}",
                 forma_entrega: "{{ pedido.forma_entrega }}",
                 direccion: "{{ pedido.direccion }}",
                 productos: [
