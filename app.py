@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, session
 from datetime import datetime
 from collections import defaultdict
 import os
@@ -11,10 +11,17 @@ load_dotenv()
 
 app = Flask(__name__, instance_relative_config=True)
 
+app.secret_key = 'clave-secreta-delicious'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+USUARIO_ADMIN= 'admin'
+PASSWORD_ADMIN= 'papas123'
+
 db.init_app(app)
+
+
 
 def leer_pedidos():
     pedidos = Pedido.query.all()
@@ -54,6 +61,32 @@ def leer_pedidos():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        usuario = request.form['username']
+        contrasena = request.form['password']
+        if usuario == USUARIO_ADMIN and contrasena == PASSWORD_ADMIN:
+            session['admin'] = True
+            return redirect(url_for('pedidos'))
+        else:
+            error = 'Usuario o contraseña incorrectos'
+    return render_template('login.html', error=error)
+
+@app.route('/admin')
+def admin():
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    return render_template('admin.html')  # Aquí va tu sección admin real
+
+@app.route('/logout')
+def logout():
+    session.pop('admin', None)
+    return redirect(url_for('index'))
+
 
 @app.route('/verificar_cliente', methods=['GET', 'POST'])
 def verificar_cliente():
@@ -268,6 +301,9 @@ def pedido_exitoso(pedido_id):
 
 @app.route('/pedidos')
 def pedidos():
+    if not session.get('admin'):
+            return redirect(url_for('login'))
+
     pedidos = leer_pedidos()  # Esta función ya la tienes y arma los pedidos
     return render_template('lista_pedidos.html', pedidos=pedidos)
 

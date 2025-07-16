@@ -52,7 +52,12 @@
       <p style="text-align: center;">No hay pedidos pendientes.</p>
     {% endif %}
 
-    <a class="volver" href="{{ url_for('index') }}">← Volver a la página principal</a>
+    <form action="{{ url_for('logout') }}" method="GET" style="display: flex; justify-content: center;">
+      <button type="submit" style="background-color: #c62828; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">
+        Cerrar sesión 🔒
+      </button>
+    </form>
+
   </div>
 
   <footer>
