@@ -30,7 +30,7 @@ class Pedido(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     forma_entrega = db.Column(db.String, nullable=False)
     estado = db.Column(db.String, default='registrado')
-    fecha_hora = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_hora = db.Column(db.DateTime)
 
     cliente = db.relationship('Cliente', back_populates='pedidos')  # ✅ corregido
     detalles = db.relationship('DetallePedido', backref='pedido', lazy=True)
@@ -53,4 +53,4 @@ class Contacto(db.Model):
     telefono = db.Column(db.String(20))
     direccion = db.Column(db.String(200))
     mensaje = db.Column(db.Text)
-    fecha = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha = db.Column(db.DateTime)

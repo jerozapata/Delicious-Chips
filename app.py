@@ -4,10 +4,14 @@ from collections import defaultdict
 import os
 from models import db, Pedido, Producto, Cliente, DetallePedido, Contacto
 from dotenv import load_dotenv
+import pytz
+from flask_migrate import Migrate
+
+
+now_col = datetime.now(pytz.timezone("America/Bogota"))
+
 
 load_dotenv()
-
-
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -21,9 +25,11 @@ PASSWORD_ADMIN= 'papas123'
 
 db.init_app(app)
 
+migrate = Migrate(app, db)
 
 
 def leer_pedidos():
+    
     pedidos = Pedido.query.all()
     resultado = []
 
@@ -208,8 +214,7 @@ def confirmar_pedido():
     forma_entrega = request.form['forma_entrega']
     direccion = request.form['direccion']
 
-    hora = datetime.now()
-
+    
     cliente = Cliente.query.filter_by(documento=documento).first()
     if not cliente:
         cliente = Cliente(nombre=nombre, documento=documento, telefono=telefono, direccion=direccion, email=email)
@@ -217,11 +222,16 @@ def confirmar_pedido():
         db.session.add(cliente)
         db.session.commit()
 
+
+    zona_colombia = pytz.timezone("America/Bogota")
+    ahora = datetime.now(zona_colombia).replace(tzinfo=None)
+
+
     pedido=Pedido(
         cliente_id=cliente.id,
         forma_entrega=forma_entrega,
         estado='registrado',
-        fecha_hora=hora
+        fecha_hora=ahora    
     )
     db.session.add(pedido)
     db.session.commit()
@@ -301,10 +311,36 @@ def pedido_exitoso(pedido_id):
 
 @app.route('/pedidos')
 def pedidos():
+    from models import Pedido
     if not session.get('admin'):
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
 
-    pedidos = leer_pedidos()  # Esta función ya la tienes y arma los pedidos
+    pedidos = leer_pedidos() 
+    estado = request.args.get('estado', '').strip().lower()
+    fecha_str = request.args.get('fecha', '').strip()
+    orden = request.args.get('orden', 'asc')
+
+
+    query = Pedido.query
+
+    if estado:
+        query = query.filter(Pedido.estado.ilike(estado))  # Ignora mayúsculas
+
+    if fecha_str:
+        try:
+            fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            # Comparamos solo la parte de fecha (ignoramos hora)
+            query = query.filter(db.func.date(Pedido.fecha_hora) == fecha)
+        except ValueError:
+            pass  # Fecha inválida, no filtramos
+
+    if orden == 'desc':
+        query = query.order_by(Pedido.fecha_hora.desc())
+    else:
+        query = query.order_by(Pedido.fecha_hora.asc())
+
+    pedidos = query.all()
+
     return render_template('lista_pedidos.html', pedidos=pedidos)
 
 @app.route('/factura/<int:pedido_id>')
