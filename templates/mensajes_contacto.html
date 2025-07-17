@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mensajes de Contacto</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stilo.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .contact-container {
+      margin: 2rem auto;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      border-radius: 15px;
+      max-width: 1200px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .contact-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-header h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .contact-header span {
+      color: #e67300;
+    }
+
+    .btn-volver {
+      background-color: #f0f0f0;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #444;
+      border: 1px solid #ccc;
+      transition: background 0.3s;
+    }
+
+    .btn-volver:hover {
+      background-color: #ddd;
+    }
+
+    .contact-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .contact-table thead {
+      background-color: #f7f7f7;
+      color: #333;
+    }
+
+    .contact-table th,
+    .contact-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid #e0e0e0;
+      text-align: left;
+    }
+
+    .contact-table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .contact-table td {
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <div class="contact-container">
+    <div class="contact-header">
+      <h1>📬 Mensajes desde <span>"Contáctanos"</span></h1>
+      <a href="{{ url_for('pedidos') }}" class="btn-volver">← Volver a pedidos</a>
+    </div>
+
+    {% if contactos %}
+    <table class="contact-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Documento</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>Mensaje</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contacto in contactos %}
+        <tr>
+          <td>{{ contacto.nombre }}</td>
+          <td>{{ contacto.documento }}</td>
+          <td>{{ contacto.correo }}</td>
+          <td>{{ contacto.telefono }}</td>
+          <td>{{ contacto.direccion }}</td>
+          <td>{{ contacto.mensaje }}</td>
+          <td>{{ contacto.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No hay mensajes disponibles por ahora.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

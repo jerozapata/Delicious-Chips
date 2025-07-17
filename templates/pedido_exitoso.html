@@ -16,13 +16,15 @@
         <p style="text-align: center; font-size: 18px;">Tu número de pedido es: <strong style="font-size: 22px;">{{ "%04d" % pedido_id }}</strong></p>
 
         <div class="botones-acciones" style="margin-top: 40px;">
-            <a href="{{ url_for('factura', pedido_id=pedido_id) }}"><button class="btn">Ver factura</button></a>
+            <a href="{{ url_for('factura', pedido_id=pedido_id) }}">
+                <button class="btn" >Ver factura</button>
+            </a>
             
         
-            <form action="{{ url_for('verificar_cliente') }}" method="get" onsubmit="localStorage.clear()">
-                <button class="btn">Registrar nuevo pedido</button>
+            <form action="{{ url_for('index') }}" method="get" onsubmit="localStorage.clear()" class="form-volver-inicio">
+                <button class="btn-secundario">Volver al Inicio</button>
             </form>
-
+        </div>
             
     </div>
 

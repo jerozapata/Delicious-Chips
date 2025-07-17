@@ -6,6 +6,8 @@ from models import db, Pedido, Producto, Cliente, DetallePedido, Contacto
 from dotenv import load_dotenv
 import pytz
 from flask_migrate import Migrate
+from flask_mail import Mail
+
 
 
 now_col = datetime.now(pytz.timezone("America/Bogota"))
@@ -20,12 +22,21 @@ app.secret_key = 'clave-secreta-delicious'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'jeronimozq2@gmail.com'
+app.config['MAIL_PASSWORD'] = 'rcdx eeux tang xflc'
+app.config['MAIL_DEFAULT_SENDER'] = 'jeronimozq2@gmail.com'
+
 USUARIO_ADMIN= 'admin'
 PASSWORD_ADMIN= 'papas123'
 
 db.init_app(app)
 
 migrate = Migrate(app, db)
+
+mail = Mail(app)
 
 
 def leer_pedidos():
@@ -185,7 +196,7 @@ def reg_pedido():
         'direccion': direccion,
         'productos': productos_list
     }
-    
+
     return render_template('confirmacion_pedido.html', pedido=pedido, productos=pedido['productos'])
 
 @app.route('/confirmar_pedido', methods=['POST'])
@@ -263,9 +274,48 @@ def confirmar_pedido():
     for d in pedido.detalles:
         print(f"✅ Guardado: {d.producto.nombre}, {d.producto.sabor}, {d.producto.gramaje}, Cant: {d.cantidad}")
 
+    # ---------- ENVÍO DE CORREO ----------
+    from flask_mail import Message
+
+    cliente_email = pedido.cliente.email
+    cliente_nombre = pedido.cliente.nombre
+
+    productos = "\n".join([f"• {d.producto.nombre} {d.producto.gramaje} ({d.producto.sabor}) x {d.cantidad}" for d in pedido.detalles])
+
+    mensaje = Message(
+        subject='✅ Confirmación de tu pedido en Delicious Chips',
+        recipients=[cliente_email]
+    )
+    mensaje.body = f"""Hola {cliente_nombre},
+
+¡Gracias por tu pedido en Delicious Chips! 🥔✨
+
+Aquí tienes los detalles de tu pedido:
+
+📦 N° de pedido: {pedido.id}
+🗓️ Fecha: {pedido.fecha_hora.strftime('%d/%m/%Y %H:%M')}
+🛍️ Forma de entrega: {pedido.forma_entrega}
+🧾 Productos:
+{productos}
+
+Pronto nos pondremos en contacto para coordinar la entrega.
+
+¡Gracias por confiar en nosotros! 😄
+
+Delicious Chips.
+"""
+
+    try:
+        mail.send(mensaje)
+        print("✅ Correo enviado correctamente.")
+    except Exception as e:
+        print(f"❌ Error al enviar el correo: {e}")
+
+    # --------------------------------------
+
     return redirect(url_for('pedido_exitoso', pedido_id=pedido.id))
 
-
+    
 
 @app.route('/detalle_pedido/<int:pedido_id>')
 def detalle_pedido_cliente(pedido_id):
@@ -380,29 +430,78 @@ def factura(pedido_id):
 
 @app.route('/contactanos', methods=['GET', 'POST'])
 def contactanos():
+    mensaje_exito = None
 
     if request.method == 'POST':
         nombre = request.form['nombre']
         documento = request.form['documento']
-        email = request.form['email']
+        correo = request.form['correo']
         telefono = request.form['telefono']
         direccion = request.form['direccion']
-        mensaje = request.form['mensaje']
+        mensaje_cliente = request.form['mensaje']
 
         nuevo_contacto = Contacto(
             nombre=nombre,
             documento=documento,
-            email=email,
+            correo=correo,
             telefono=telefono,
             direccion=direccion,
-            mensaje=mensaje
+            mensaje=mensaje_cliente,
+            fecha=datetime.now()
         )
         db.session.add(nuevo_contacto)
         db.session.commit()
 
-        return render_template('contactanos.html', mensaje="¡Gracias por contactarnos! 😊")
+        # ---------- ENVÍO DE CORREO ----------
+        from flask_mail import Message
 
-    return render_template('contactanos.html')
+        msg = Message(
+            subject="📩 Hemos recibido tu mensaje - Delicious Chips",
+            recipients=[correo]
+        )
+        msg.body = f"""Hola {nombre},
+
+¡Gracias por comunicarte con Delicious Chips! 🥔✨
+
+Hemos recibido tu mensaje y pronto nos pondremos en contacto contigo.
+
+📋 Tus datos:
+Nombre: {nombre}
+Documento: {documento}
+Correo: {correo}
+Teléfono: {telefono}
+Dirección: {direccion}
+
+📨 Mensaje enviado:
+{mensaje_cliente}
+
+Fecha de contacto: {nuevo_contacto.fecha.strftime('%d/%m/%Y %H:%M')}
+
+¡Gracias por escribirnos! 😄
+
+Delicious Chips.
+"""
+
+        try:
+            mail.send(msg)
+            mensaje_exito = "✅ ¡Gracias por escribirnos! Hemos recibido tu mensaje y te contactaremos pronto."
+            print("✅ Correo de contacto enviado correctamente.")
+        except Exception as e:
+            mensaje_exito = "⚠️ Hemos recibido tu mensaje, pero no pudimos enviarte un correo de confirmación en este momento."
+            print(f"❌ Error al enviar correo de contacto: {e}")
+        # --------------------------------------
+
+    return render_template('contactanos.html', mensaje_exito=mensaje_exito)
+        
+
+@app.route('/mensajes_contacto')
+def mensajes_contacto():
+    
+
+    from models import Contacto  # o como se llame tu modelo
+    contactos = Contacto.query.order_by(Contacto.fecha.asc()).all()  # del más antiguo al más reciente
+    return render_template('mensajes_contacto.html', contactos=contactos)
+
 
       
 @app.route('/modificar_pedido/<int:pedido_id>', methods=['GET'])
@@ -420,6 +519,7 @@ def modificar_pedido(pedido_id):
             'producto': producto.nombre,
             'sabor': producto.sabor,
             'cantidad': detalle.cantidad,
+            'gramaje': producto.gramaje,
             'observaciones': detalle.observaciones or 'Sin observaciones'
         })
 
@@ -445,20 +545,65 @@ def actualizar_pedido(pedido_id):
     pedido = db.session.get(Pedido, pedido_id)
     if not pedido:
         return "Pedido no encontrado", 404
-    
+
     cliente = pedido.cliente
+
+    # Obtener datos nuevos del formulario
+    documento_nuevo = request.form['documento']
+    telefono_nuevo = request.form['telefono']
+    email_nuevo = request.form['email']
+
+    # Validar documento duplicado
+    cliente_existente_doc = Cliente.query.filter(
+        Cliente.documento == documento_nuevo,
+        Cliente.id != cliente.id
+    ).first()
+    if cliente_existente_doc:
+        return render_template(
+            'modificar_pedido.html',
+            pedido=pedido,
+            error_documento="El documento ya está en uso por otro cliente"
+        )
+
+    # Validar teléfono duplicado
+    cliente_existente_tel = Cliente.query.filter(
+        Cliente.telefono == telefono_nuevo,
+        Cliente.id != cliente.id
+    ).first()
+    if cliente_existente_tel:
+        return render_template(
+            'modificar_pedido.html',
+            pedido=pedido,
+            error_telefono="El teléfono ya está en uso por otro cliente"
+        )
+    
+    cliente_existente_email = Cliente.query.filter(
+        Cliente.email == email_nuevo,
+        Cliente.id != cliente.id
+    ).first()
+    if cliente_existente_email:
+        return render_template(
+            'modificar_pedido.html',
+            pedido=pedido,
+            error_email="El email ya está en uso por otro cliente"
+        )
+
+    # Actualizar datos del cliente
     cliente.nombre = request.form['nombre']
-    cliente.documento = request.form['documento']
-    cliente.telefono = request.form['telefono']
+    cliente.documento = documento_nuevo
+    cliente.telefono = telefono_nuevo
     cliente.email = request.form['email']
     cliente.direccion = request.form['direccion']
 
+    # Actualizar datos del pedido
     pedido.forma_entrega = request.form['forma_entrega']
     pedido.estado = request.form['estado']
 
+    # Eliminar detalles anteriores
     for detalle in pedido.detalles:
         db.session.delete(detalle)
 
+    # Agregar los nuevos productos
     productos = request.form.getlist('producto[]')
     sabores = request.form.getlist('sabor[]')
     cantidades = request.form.getlist('cantidad[]')

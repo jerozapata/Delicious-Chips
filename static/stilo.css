@@ -211,7 +211,7 @@ footer {
 
 /* --- FORMULARIO DE PEDIDO --- */
 
-form {
+.contenido-principal form {
   background: #fff;
   padding: 30px;
   border-radius: 15px;
@@ -398,10 +398,14 @@ h2 {
   gap: 30px;
 }
 
-.confirmar-pedido .botones-acciones form {
+.confirmar-pedido .botones-acciones a,
+.confirmar-pedido .botones-acciones .form-volver-inicio {
   flex: 1;
   max-width: 220px;
+  margin: 0;
 }
+
+
 
 .confirmar-pedido .btn,
 .confirmar-pedido .btn-secundario {
@@ -1271,6 +1275,115 @@ h2 {
 .btn-limpiar {
   background-color: #ccc;
   color: black;
+}
+.contact-container {
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-radius: 15px;
+  max-width: 1200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.contact-header h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.contact-header span {
+  color: #e67300;
+}
+
+.btn-volver {
+  background-color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #444;
+  border: 1px solid #ccc;
+  transition: background 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: #ddd;
+}
+
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.contact-table thead {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.contact-table th, .contact-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.contact-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.botones-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.btn-filtrar,
+.btn-limpiar,
+.boton-contacto {
+  width: 240px;
+  height: 65px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  text-decoration: none;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.btn-filtrar {
+  background-color: orange;
+  color: white;
+  border: none;
+}
+
+.btn-limpiar {
+  background-color: lightgray;
+  color: black;
+  border: none;
+}
+
+.boton-contacto {
+  background-color: purple;
+  color: white;
+  border: none;
+}
+
+.btn-filtrar:hover,
+.btn-limpiar:hover,
+.btn-contacto:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
 }
 
 

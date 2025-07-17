@@ -108,7 +108,7 @@
 
 
       <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} >
+      <input type="text" name="direccion" id="direccion" value="{{ direccion }}" {% if cliente_existente %}readonly{% endif %} required>
 
       <br></br>
       <button type="submit" id="enviarPedido">Enviar pedido</button>
@@ -177,14 +177,10 @@
       document.querySelector('[name="telefono"]').value = pedido.telefono;
       document.querySelector('[name="direccion"]').value = pedido.direccion;
 
-      // Forma de entrega
-      const radios = document.querySelectorAll('[name="forma_entrega"]');
-      radios.forEach(radio => {
-        if (radio.value === pedido.forma_entrega) radio.checked = true;
-      });
 
       // Limpiar productos actuales
       contenedorProductos.innerHTML = '';
+      
 
       // Agregar productos desde JSON
       pedido.productos.forEach(p => {
@@ -204,8 +200,11 @@
         contenedorProductos.appendChild(div);
       });
 
-      localStorage.removeItem('pedidoGuardado');
-    };
+      if (localStorage.getItem('pedidoConfirmado')) {
+        localStorage.removeItem('pedidoConfirmado');
+        localStorage.removeItem('pedidoGuardado');
+        return; // No cargamos datos
+      }
 
     // Validación del formulario antes de enviar
     function validarFormulario() {
@@ -234,6 +233,7 @@
 
       return true;
     }
+  } // <-- Agrega esta llave para cerrar window.onload
   </script>
 
 

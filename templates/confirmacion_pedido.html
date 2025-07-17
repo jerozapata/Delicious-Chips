@@ -55,8 +55,7 @@
                 <input type="hidden" name="estado" value="{{ pedido.estado | default('Registrado') }}">
                 
                 
-                
-                <button type="submit" class="btn">✅ Confirmar Pedido</button>
+                <button onclick="confirmarPedido()" class="btn">✅ Confirmar Pedido</button>
             </form>
 
             <form action="{{ url_for('registrar_pedido') }}" method="get" onsubmit="guardarDatosEnLocalStorage()">
@@ -66,34 +65,11 @@
         </div>
     </div>
 
+    
+
     <script>
-        function guardarPedido() {
-            const pedido = {
-                nombre: "{{ pedido.nombre }}",
-                documento: "{{ pedido.documento }}",
-                telefono: "{{ pedido.telefono }}",
-                email: "{{ pedido.email }}",
-                forma_entrega: "{{ pedido.forma_entrega }}",
-                direccion: "{{ pedido.direccion }}",
-                productos: [
-                    {% for p in pedido.productos %}
-                    {
-                        producto: "{{ p.producto }}",
-                        sabor: "{{ p.sabor }}",
-                        gramaje: "{{ p.gramaje }}",
-                        precio_unitario: {{ p.precio_unitario }},
-                        cantidad: {{ p.cantidad }},
-                        observaciones: "{{ p.observaciones | default('') }}"
-                    }{% if not loop.last %},{% endif %}
-                    {% endfor %}
-                ]
-            };
-
-            localStorage.setItem('pedidoGuardado', JSON.stringify(pedido));
-        }
-
-        window.onload = guardarPedido;
-</script>
+        localStorage.setItem('pedidoConfirmado', 'true');
+    </script>
 
 
 </body>

@@ -12,7 +12,7 @@
     <h1>Pedidos por gestionar</h1>
 
 
-   <form class="filtro-container" method="get" action="{{ url_for('pedidos') }}">
+   <form class="filtro-container" method="get" action="{{ url_for('pedidos') }}" style="background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 800px; margin: 30px auto; font-size: 16px;">
     <div class="filtro-item">
       <label for="estado">Estado:</label>
       <select name="estado" id="estado">
@@ -38,10 +38,10 @@
       </select>
     </div>
 
-    <div class="filtro-botones">
-      <button type="submit" class="btn-filtrar">Filtrar</button>
-      <a href="{{ url_for('pedidos') }}" class="btn-limpiar">Quitar filtros</a>
-    </div>
+    <button type="submit" class="btn-filtrar">Filtrar</button>
+    <a href="{{ url_for('pedidos') }}" class="btn-limpiar">Quitar filtros</a>
+    <a href="{{ url_for('mensajes_contacto') }}" class="boton-contacto">📬 Ver mensajes de contacto</a>
+
   </form>
 
 
@@ -50,26 +50,26 @@
       {% for pedido in pedidos %}
         <div class="pedido-card">
           
-          <p><strong>ID del Pedido:</strong> {{ "%04d" % pedido['id'] }}<p>
+          <p><strong>ID del Pedido:</strong> {{ "%04d" % pedido.id }}<p>
 
           <p>
             <strong>Estado:</strong>
             <span class="estado-label estado-{{ pedido['estado'] | default('registrado') }}">
-              {{ pedido['estado'] | default('Registrado') }}
+              {{ pedido.estado | default('Registrado') }}
             </span>
 
           </p>
           
-          <p><strong>Nombre:</strong> {{ pedido['nombre'] }}</p>
+          <p><strong>Nombre:</strong> {{ pedido.cliente.nombre }}</p>
 
           <p><strong>Productos:</strong></p>
           <ul>
-            {% for prod in pedido.productos %}
-              <li>{{ prod.cantidad }} x {{ prod.producto }} ({{ prod.sabor }})</li>
+            {% for detalle in pedido.detalles %}
+              <li>{{ detalle.cantidad }} x {{ detalle.producto.nombre }} ({{ detalle.producto.sabor }}) - {{ detalle.producto.gramaje}}</li>
             {% endfor %}
           </ul>
           
-          <p><strong>Fecha y hora del pedido:</strong> {{ pedido['fecha_hora'].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+          <p><strong>Fecha y hora del pedido:</strong> {{ pedido.fecha_hora.strftime('%Y-%m-%d %H:%M:%S') }}</p>
           
           <div style="display: flex; gap: 10px;">
             <a href="{{ url_for('detalle_pedido_cliente', pedido_id=pedido.id) }}" class="btn">Ver detalles</a>

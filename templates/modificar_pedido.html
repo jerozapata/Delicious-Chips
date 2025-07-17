@@ -25,6 +25,9 @@
                         <label>Sabor:</label>
                         <input type="text" name="sabor[]" value="{{ producto.sabor }}"><br><br>
 
+                        <label>Gramaje:</label>
+                        <input type="text" name="gramaje[]" value="{{ producto.gramaje }}"><br><br>
+
                         <label>Cantidad:</label>
                         <input type="number" name="cantidad[]" value="{{ producto.cantidad }}"><br><br>
 
@@ -36,24 +39,24 @@
                 {% endfor %}
                 
                 <label>Nombre:</label>
-                <input type="text" name="nombre" value="{{ pedido.get('nombre', '') }}"><br><br>
+                <input type="text" name="nombre" value="{{  pedido.nombre or '' }}"><br><br>
                 
                 <label>Documento:</label>
-                <input type="number" name="documento" value="{{ pedido.get('documento', '') }}"><br><br>
+                <input type="number" name="documento" value="{{ pedido.documento or '' }}"><br><br>
                 
                 <label>Teléfono:</label>
-                <input type="number" name="telefono" value="{{ pedido.get('telefono', '') }}"><br><br>
+                <input type="number" name="telefono" value="{{ pedido.telefono or '' }}"><br><br>
 
                 <label>Correo electrónico:</label>
-                <input type="email" name="email" value="{{  pedido.get('email', '') }}">
+                <input type="email" name="email" value="{{  pedido.email or '' }}">
                 
                 <label>Dirección:</label>
-                <input type="text" name="direccion" value="{{ pedido.get('direccion', '') }}"><br><br>
+                <input type="text" name="direccion" value="{{ pedido.direccion or '' }}"><br><br>
 
                 <label>Forma de entrega:</label>
                 <select name="forma_entrega">
-                    <option value="Domicilio"{% if pedido.get('forma_entrega') == 'Domicilio' %}selected{% endif %}>Domicilio</option>
-                    <option value="Recoger en sede"{% if pedido.get('forma_entrega') == 'Recoger en sede' %}selected{% endif %}>Recoger en sede</option>
+                    <option value="Domicilio"{% if pedido.forma_entrega == 'Domicilio' %}selected{% endif %}>Domicilio</option>
+                    <option value="Recoger en sede"{% if pedido.forma_entrega == 'Recoger en sede' %}selected{% endif %}>Recoger en sede</option>
                 </select><br><br>
 
                 <label for="estado">Estado del pedido:</label>
@@ -70,8 +73,6 @@
                     <button type="submit" class="btn btn-guardar">Guardar Cambios</button>
                     <a href="{{ url_for('pedidos') }}" class="btn btn-cancelar">Cancelar</a>
                 </div>
-
-            
 
             </form>
             

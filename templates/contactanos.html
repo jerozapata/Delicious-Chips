@@ -14,9 +14,6 @@
     <div class="container">
       <h1>Contáctanos</h1>
 
-      {% if mensaje %}
-        <p style="color: green; font-weight: bold;">{{ mensaje }}</p>
-      {% endif %}
 
       <div class="info"><strong>Teléfono:</strong> 3159284022</div>
       <div class="info"><strong>Correo:</strong> deliciouschips@yahoo.com.co</div>
@@ -31,6 +28,13 @@
           <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">Facebook
         </a>
       </div>
+
+      {% if mensaje_exito %}
+        <div class="mensaje-exito" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin-top: 15px; border-radius: 5px;">
+          {{ mensaje_exito }}
+        </div>
+      {% endif %}
+
 
       <div class="formulario">
         <h2>Déjanos tus datos</h2>
@@ -72,6 +76,28 @@
   <footer>
       <p>&copy; 2025 Delicious Chips. Todos los derechos reservados.</p>
   </footer>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const mensaje = document.querySelector('.mensaje-exito');
+      const formulario = document.querySelector('form');
+
+      if (mensaje) {
+        // Ocultar el mensaje después de 4 segundos
+        setTimeout(() => {
+          mensaje.style.transition = 'opacity 0.5s ease';
+          mensaje.style.opacity = '0';
+          setTimeout(() => mensaje.remove(), 500);
+        }, 4000);
+
+        // Limpiar el formulario automáticamente
+        if (formulario) {
+          formulario.reset();
+        }
+      }
+    });
+  </script>
+
 
 </body>
 </html>

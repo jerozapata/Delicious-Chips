@@ -19,7 +19,6 @@
         <nav class="navbar">
             <ul id="bar">
                 <li><a href="{{url_for('index')}}">Inicio</a></li>
-                <li>Ver cátalogo</li>
                 <li><a href="{{ url_for('verificar_cliente') }}">Realizar pedido</a></li>
                 <li><a href="{{ url_for('contactanos') }}">Contáctanos</a></li>
                 <li><a href="{{ url_for('rastreo') }}">Rastrea tu pedido</a></li>
@@ -52,10 +51,12 @@
                 </div>
             </div>
             
-            <p class="subtexto">Haz tu pedido fácilmente desde nuestra plataforma.</p>
+            <p class="subtexto">Descarga nuestro catálogo.</p>
             <!--<img src="{{ url_for('static', filename='cliente.png') }}" alt="Cliente feliz" class="img-sec">-->
             <div class="boton-centro">
-                <a href="{{ url_for('registrar_pedido') }}" class="btn">Realizar Pedido</a>
+                <a href="{{ url_for('static', filename='descargas/catalogo.pdf') }}" download="CatalogoDeliciousChips.pdf" class="btn">
+                    Descargar Catálogo
+                </a>
             </div>
         
         </section>
